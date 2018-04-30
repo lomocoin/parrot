@@ -6,6 +6,7 @@
   "license": "MIT",
   "private": true,
   "scripts": {
+    "start": "ts-node src/server.ts",
     "dev": "ts-node",
     "test": "jest --forceExit --coverage --verbose",
     "build": "tsc"
