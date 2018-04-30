@@ -6,8 +6,9 @@ import fs from 'fs';
 import path from 'path';
 import ini from 'ini';
 import * as http from 'http';
+import mockMiddleWare from './middleware';
 
-const config = ini.parse(fs.readFileSync('./.mock.conf', 'utf-8'));
+const config = require('../.mock.json');
 const app: Express  = express();
 
 app.set('views', path.join(__dirname, 'views'));
@@ -16,6 +17,8 @@ app.set('view engine', 'pug');
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
+
+app.use(mockMiddleWare);
 
 app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
   let status = 500;

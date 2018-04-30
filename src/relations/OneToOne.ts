@@ -10,7 +10,7 @@ export interface IOneToOne extends IProperty {
 };
 
 export const OneToOne = (option: IOneToOneOption)  => (target: any, propertyName: string) => {
-  const entityName = target.constructor.toString().split(' ')[1];
+  const entityName = target.constructor.toString().split(' ')[1].toLowerCase();
   metaRepo.pushRelation(entityName, 'OneToOne', {
     name: propertyName,
     option,

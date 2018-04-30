@@ -6,7 +6,7 @@ export interface IEnumProperty extends IProperty {
 };
 
 export const Enum = (option: any[] | string) => (target: any, propertyName: string) => {
-  const entityName = target.constructor.toString().split(' ')[1];
+  const entityName = target.constructor.toString().split(' ')[1].toLowerCase();
   metaRepo.pushProperty(entityName, 'enumProperties', {
     name: propertyName,
     option,

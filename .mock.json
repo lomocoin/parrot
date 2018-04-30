@@ -1,0 +1,4 @@
+{
+  "port": 7001,
+  "models": "./test/models"
+}

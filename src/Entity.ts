@@ -31,7 +31,7 @@ export const Entity = <T extends {new(...args:any[]):{}}>(constructor: T) => {
   class Instance extends constructor implements BaseEntity{
     constructor(...args: any[]) {
       super(...args);
-      const entityName = constructor.toString().split(' ')[1];
+      const entityName = constructor.toString().split(' ')[1].toLowerCase();
       metaRepo.getMeta(entityName, 'stringProperties')!
         .forEach(({ name, option }: IStringProperty) => {
           (this as any)[name] = getRandomString(option);

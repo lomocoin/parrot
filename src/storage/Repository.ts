@@ -1,6 +1,6 @@
 import BaseEntity from './BaseEntity';
 
-export default class Table {
+export default class Repository {
   Entity: any;
   data: Map<number, BaseEntity | undefined> = new Map<number,BaseEntity>();
 
@@ -17,12 +17,12 @@ export default class Table {
   delete(id: number): void {
     this.data.set(id, undefined);
   }
-  select(filter?: (r: BaseEntity, i: number) => {} | undefined): (BaseEntity | undefined)[] {
+  select(filter?: (r: BaseEntity, i: number) => {} | undefined): (any | undefined)[] {
     const result = [...this.data.values()];
     if (!filter) return result;
     return result.filter(filter);
   }
-  selectOne(find: (r: BaseEntity, i: number) => boolean): BaseEntity | undefined {
+  selectOne(find: (r: BaseEntity, i: number) => boolean): any | undefined {
     const result = [...this.data.values()];
     return result.find(find);
   }
