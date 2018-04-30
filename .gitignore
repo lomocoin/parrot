@@ -67,5 +67,3 @@ docs
 .cache
 yarn-*.log
 sessions
-
-test
