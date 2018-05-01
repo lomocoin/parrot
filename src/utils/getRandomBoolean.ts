@@ -1,3 +1,3 @@
 import getRandomNumber from './getRandomNumber';
 
-export default (): boolean => getRandomNumber({ high: 1 }) === 1;
+export default (): boolean => getRandomNumber({ limit: 1 }) === 1;

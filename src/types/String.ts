@@ -2,8 +2,7 @@ import { IProperty } from '../Entity';
 import metaRepo from '../storage/MetaRepo';
 
 interface IStringOption {
-  start: number,
-  length: number
+  limit: [number, number]
 }
 
 export interface IStringProperty extends IProperty {

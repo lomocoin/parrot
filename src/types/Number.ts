@@ -2,8 +2,7 @@ import { IProperty } from '../Entity';
 import metaRepo from '../storage/MetaRepo';
 
 interface INumberOption {
-  low: number,
-  high: number
+  limit: [number, number]
 }
 
 export interface INumberProperty extends IProperty {
