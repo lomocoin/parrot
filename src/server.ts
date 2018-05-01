@@ -18,7 +18,7 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 
-app.use(mockMiddleWare);
+app.use(mockMiddleWare(config));
 
 app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
   let status = 500;

@@ -11,7 +11,6 @@ export interface IOneToMany extends IProperty {
 
 export const OneToMany = (option: IOneToManyOption)  => (target: any, propertyName: string) => {
   const entityName = target.constructor.toString().split(' ')[1].toLowerCase();
-  console.log(entityName, 'OneToMany', propertyName, option);
   metaRepo.pushRelation(entityName, 'OneToMany', {
     name: propertyName,
     option,

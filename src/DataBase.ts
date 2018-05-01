@@ -1,16 +1,13 @@
-import fs from 'fs';
-import { resolve } from 'path';
 import Repository from './storage/Repository';
 import metaRepo from './storage/MetaRepo';
 
-const models = (fs.readdirSync(resolve(__dirname, '../test/models'), 'utf-8') as string[])
-  .map((name: string) => ({
-    name: name.replace(/\..*$/i, '').toLowerCase(),
-    path: `${resolve(__dirname, '../test/models')}/${name}`,
-  }))
+interface IModel {
+  name: string;
+  path: string;
+}
 
 export default class DataBase extends Map<string, Repository> {
-  constructor() {
+  constructor(models: IModel[]) {
     super();
     // create repositorys and first record
     models.forEach(({ name, path }: { name: string, path: string }) => {
