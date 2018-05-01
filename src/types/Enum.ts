@@ -1,4 +1,5 @@
-import { IProperty } from '../Entity';
+import { pluralize } from 'inflected';
+import { IProperty } from './';
 import metaRepo from '../storage/MetaRepo';
 
 export interface IEnumProperty extends IProperty {
@@ -6,7 +7,7 @@ export interface IEnumProperty extends IProperty {
 };
 
 export const Enum = (option: any[] | string) => (target: any, propertyName: string) => {
-  const entityName = target.constructor.toString().split(' ')[1].toLowerCase();
+  const entityName = pluralize(target.constructor.toString().split(' ')[1].toLowerCase());
   metaRepo.pushProperty(entityName, 'enumProperties', {
     name: propertyName,
     option,

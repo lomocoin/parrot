@@ -3,6 +3,7 @@ import fs from 'fs';
 import { resolve } from 'path';
 import Express from 'express';
 import path from 'path';
+import { pluralize } from 'inflected';
 import DataBase from './DataBase';
 import splitPath from './utils/splitPath';
 import Repository from './storage/Repository';
@@ -39,7 +40,7 @@ export default (config: any) => {
 
   const models = (fs.readdirSync(resolve(__dirname, '../test/models'), 'utf-8') as string[])
     .map((name: string) => ({
-      name: name.replace(/\..*$/i, '').toLowerCase(),
+      name: pluralize(name.replace(/\..*$/i, '').toLowerCase()),
       path: `${resolve(__dirname, '../test/models')}/${name}`,
     }))
 

@@ -1,3 +1,4 @@
+import { pluralize } from 'inflected';
 import Repository from './storage/Repository';
 import metaRepo from './storage/MetaRepo';
 
@@ -24,7 +25,7 @@ export default class DataBase extends Map<string, Repository> {
         const source = repository!.select();
         source.forEach((record, index) => {
           repository!.update(record!.id, {
-            [propertyName]: this.get(option.targetTable.toLowerCase())!.select((r, i) => i % source.length === index),
+            [propertyName]: this.get(pluralize(option.targetTable.toLowerCase()))!.select((r, i) => i % source.length === index),
           });
         })
       });
@@ -34,7 +35,7 @@ export default class DataBase extends Map<string, Repository> {
         const source = repository!.select();
         source.forEach((record, index) => {
           repository!.update(record!.id, {
-            [propertyName]: this.get(option.targetTable.toLowerCase())!.selectOne((r) => (r as any)[option.targetProperty] === record!.id)
+            [propertyName]: this.get(pluralize(option.targetTable.toLowerCase()))!.selectOne((r) => (r as any)[option.targetProperty] === record!.id)
           });
         })
       });
@@ -44,7 +45,7 @@ export default class DataBase extends Map<string, Repository> {
         const source = repository!.select();
         source.forEach((record, index) => {
           repository!.update(record!.id, {
-            [propertyName]: this.get(option.targetTable.toLowerCase())!.select((r) => r.id === index)
+            [propertyName]: this.get(pluralize(option.targetTable.toLowerCase()))!.select((r) => r.id === index)
           });
         })
       });

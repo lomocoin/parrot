@@ -1,4 +1,5 @@
-import { IProperty } from '../Entity';
+import { pluralize } from 'inflected';
+import { IProperty } from '../types';
 import metaRepo from '../storage/MetaRepo';
 
 interface IOneToManyOption {
@@ -10,7 +11,7 @@ export interface IOneToMany extends IProperty {
 };
 
 export const OneToMany = (option: IOneToManyOption)  => (target: any, propertyName: string) => {
-  const entityName = target.constructor.toString().split(' ')[1].toLowerCase();
+  const entityName = pluralize(target.constructor.toString().split(' ')[1].toLowerCase());
   metaRepo.pushRelation(entityName, 'OneToMany', {
     name: propertyName,
     option,

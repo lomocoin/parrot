@@ -1,3 +1,4 @@
+import { pluralize } from 'inflected';
 import BaseEntity from './storage/BaseEntity';
 import {
   IStringProperty,
@@ -11,10 +12,6 @@ import getRandomNumber from './utils/getRandomNumber';
 import getRandomBoolean from './utils/getRandomBoolean';
 import getRandom from './utils/getRandom';
 import applyMixins from './utils/applyMixins';
-
-export interface IProperty {
-  name: string;
-}
 
 interface IMetaEntityConstructor {
   new(...args: any[]): MetaEntity;
@@ -31,7 +28,7 @@ export const Entity = <T extends {new(...args:any[]):{}}>(constructor: T) => {
   class Instance extends constructor implements BaseEntity{
     constructor(...args: any[]) {
       super(...args);
-      const entityName = constructor.toString().split(' ')[1].toLowerCase();
+      const entityName = pluralize(constructor.toString().split(' ')[1].toLowerCase());
       metaRepo.getMeta(entityName, 'stringProperties')!
         .forEach(({ name, option }: IStringProperty) => {
           (this as any)[name] = getRandomString(option);
