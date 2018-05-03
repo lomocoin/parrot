@@ -13,7 +13,7 @@ const config: any = {
   port: 7001,
   mockPath: './test/models',
 };
-if (fs.existsSync(resolve('./.mock.json'))) {
+if (fs.existsSync(resolve('.', './.mock.json'))) {
   Object.assign(config, JSON.parse(fs.readFileSync(resolve('.', './.mock.json'), 'utf-8')));
 }
 
