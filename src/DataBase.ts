@@ -13,8 +13,9 @@ export default class DataBase extends Map<string, Repository> {
     // create repositorys and first record
     models.forEach(({ name, path }: { name: string, path: string }) => {
       const Entity = require(path).default;
+      const record = new Entity();
       const repository = new Repository(Entity);
-      repository.insert(new Entity())
+      repository.insert(record)
       this.set(name, repository);
     });
 

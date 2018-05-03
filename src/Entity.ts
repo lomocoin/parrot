@@ -21,26 +21,26 @@ export interface MetaEntity {
 }
 
 export const Entity = <T extends {new(...args:any[]):{}}>(constructor: T) => {
-  class Instance extends constructor implements BaseEntity{
+  const EntityName = pluralize(constructor.toString().split(' ')[1].toLowerCase());
+  class Instance extends constructor implements BaseEntity {
     constructor(...args: any[]) {
       super(...args);
-      const entityName = pluralize(constructor.toString().split(' ')[1].toLowerCase());
-      metaRepo.getMeta(entityName, 'string')!
+      metaRepo.getMeta(EntityName, 'string')!
         .forEach(({ name, option }: IString) => {
-          (this as any)[name] = getRandomString(option);
+          (this as any)[name] = (args as any)[name] || getRandomString(option);
         });
-      metaRepo.getMeta(entityName, 'number')!
+      metaRepo.getMeta(EntityName, 'number')!
         .forEach(({ name, option }: INumber) => {
-          (this as any)[name] = getRandomNumber(option);
+          (this as any)[name] = (args as any)[name] || getRandomNumber(option);
         });
-      metaRepo.getMeta(entityName, 'bool')!
+      metaRepo.getMeta(EntityName, 'bool')!
         .forEach(({ name, option }: IBool) => {
-          (this as any)[name] = (option && option.value) ? option.value : getRandomBoolean();
+          (this as any)[name] = (args as any)[name] || ((option && option.value) ? option.value : getRandomBoolean());
         });
-      metaRepo.getMeta(entityName, 'enum')!
+      metaRepo.getMeta(EntityName, 'enum')!
         .forEach(({ name, option }: IEnum) => {
           const enums = option.target instanceof Array ? option : require((option.target as string));
-          (this as any)[name] = getRandom(enums);
+          (this as any)[name] = (args as any)[name] || getRandom(enums);
         });
       
       this.id = BaseEntity.nextVal();
@@ -48,6 +48,7 @@ export const Entity = <T extends {new(...args:any[]):{}}>(constructor: T) => {
     }
 
     protected static sequence: number = 1;
+    protected static EntityName: string = EntityName;
 
     static nextVal() {
       return Instance.sequence ++;

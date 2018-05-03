@@ -6,8 +6,8 @@ import { pluralize } from 'inflected';
 import DataBase from './DataBase';
 import splitPath from './utils/splitPath';
 import Repository from './storage/Repository';
-
-// TODO: load configs
+import { NotFoundError } from './Errors';
+import errorWrap from './utils/errorWrap';
 
 const getRecord = (record: { [key: string]: any }, splittedPath: string[][]): any => {
   if (splittedPath.length === 0) {
@@ -24,7 +24,11 @@ const getRecord = (record: { [key: string]: any }, splittedPath: string[][]): an
   return subRecord;
 }
 
-const query = (repo: Repository, splittedPath: string[][]) => {
+const getHandler = (db: DataBase, splittedPath: string[][]) => {
+  const repo = db.get(splittedPath[0][0])!;
+  if (!repo) {
+    throw new NotFoundError();
+  }
   let resultSet = null;
   const [property, id] = splittedPath[0];
   if (id) {
@@ -35,6 +39,76 @@ const query = (repo: Repository, splittedPath: string[][]) => {
   }
 }
 
+const postHandler = (db: DataBase, splittedPath: string[][], params: any) => {
+  let repo;
+  let parentRepo;
+  if (splittedPath.length <= 0) {
+    throw new NotFoundError();
+  } else if (splittedPath.length === 1) {
+    repo = db.get(splittedPath[splittedPath.length - 1][0])!;
+    const record = new repo.Entity(...params)
+    repo.insert(record);
+  } else {
+    repo = db.get(splittedPath[splittedPath.length - 1][0])!;
+    const [parentRepoName, id] = splittedPath[splittedPath.length - 2][0];
+    parentRepo = db.get(parentRepoName)!;
+    const record = new repo.Entity(...params)
+    repo.insert(record);
+    const parentRecord = parentRepo.selectOne((r) => r.id === Number.parseInt(id, 10));
+    parentRepo.update(parentRecord.id, { ...parentRecord, ...{
+      [repo.Entity.EntityName]: [...parentRecord[repo.Entity.entityName], record],
+    }});
+  }
+}
+
+const putHandler = (db: DataBase, splittedPath: string[][], params: any) => {
+  let repo;
+  let parentRepo;
+  if (splittedPath.length <= 0) {
+    throw new NotFoundError();
+  } else if (splittedPath.length === 1) {
+    const [repoName, recordId] = splittedPath[splittedPath.length - 1];
+    repo = db.get(repoName)!;
+    repo.update(Number.parseInt(recordId), params);
+  } else {
+    const [repoName, recordId] = splittedPath[splittedPath.length - 1];
+    const [parentRepoName, parentRecordId] = splittedPath[splittedPath.length - 2];
+    repo = db.get(repoName)!;
+    repo.update(Number.parseInt(recordId), params);
+    parentRepo = db.get(parentRepoName)!;
+    const parentRecord = parentRepo.selectOne((r) => r.id === Number.parseInt(parentRecordId, 10));
+    parentRepo.update(Number.parseInt(parentRecordId), {
+      [repo.Entity.EntityName]: [...parentRecord[repo.Entity.EntityName].map((r: any) => (
+        r.id === recordId ? { ...params, ...r } : r
+      ))],
+    });
+  }
+}
+
+const deleteHandler = (db: DataBase, splittedPath: string[][]) => {
+  let repo;
+  let parentRepo;
+  if (splittedPath.length <= 0) {
+    throw new NotFoundError();
+  } else if (splittedPath.length === 1) {
+    const [repoName, recordId] = splittedPath[splittedPath.length - 1];
+    repo = db.get(repoName)!;
+    repo.delete(Number.parseInt(recordId));
+  } else {
+    const [repoName, recordId] = splittedPath[splittedPath.length - 1];
+    const [parentRepoName, parentRecordId] = splittedPath[splittedPath.length - 2];
+    repo = db.get(repoName)!;
+    repo.delete(Number.parseInt(recordId));
+    parentRepo = db.get(parentRepoName)!;
+    const parentRecord = parentRepo.selectOne((r) => r.id === Number.parseInt(parentRecordId, 10));
+    parentRepo.update(Number.parseInt(parentRecordId), {
+      [repo.Entity.EntityName]: [...parentRecord[repo.Entity.EntityName].filter((r: any) => (
+        r.id !== recordId
+      ))],
+    });
+  }
+}
+
 export default (config: any) => {
 
   const models = (fs.readdirSync(resolve('.', config.mockPath), 'utf-8') as string[])
@@ -42,21 +116,29 @@ export default (config: any) => {
       name: pluralize(name.replace(/\..*$/i, '').toLowerCase()),
       path: `${resolve('.', config.mockPath)}/${name}`,
     }))
-
+  
   const db = new DataBase(models);
   
-  return (req: Express.Request, res: Express.Response, next: Express.NextFunction) => {
+  return errorWrap(async (req: Express.Request, res: Express.Response, next: Express.NextFunction) => {
     const splittedPath = splitPath(req.path);
-  
-    if (splittedPath.length === 0) {
-      // TODO: list all repos
-      return res.status(404).end();
+
+    if (req.method === 'GET') {
+      const result = await getHandler(db, splittedPath);
+      return res.status(200).json(result).end();
+    } else if (req.method === 'POST') {
+      await postHandler(db, splittedPath, req.body);
+      return res.status(201).end();
+    } else if (req.method === 'PUT') {
+      await putHandler(db, splittedPath, req.body);
+      return res.status(200).end();
+    } else if (req.method === 'PATCH') {
+      await putHandler(db, splittedPath, req.body);
+      return res.status(200).end();
+    } else if (req.method === 'DELETE') {
+      await deleteHandler(db, splittedPath);
+      return res.status(200).end();
+    } else {
+      return res.status(405).end();
     }
-    const mainRepo = db.get(splittedPath[0][0]);
-    if (!mainRepo) {
-      return res.status(404).end();
-    }
-    const result = query(mainRepo!, splittedPath);
-    return res.status(200).json(result).end();
-  }
+  })
 } 
