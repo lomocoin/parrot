@@ -84,7 +84,7 @@ describe('applyMixins', () => {
 
     const monster = new Monster();
 
-    expect(monster.woof()).toBe('Woof!');
+    expect(monster.woof()).toBe('Woo;f!');
     expect(monster.fly()).toBe('Flying');
   })
 });

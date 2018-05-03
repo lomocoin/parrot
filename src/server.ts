@@ -3,15 +3,23 @@ import bodyParser from 'body-parser';
 import cookieParser from 'cookie-parser';
 import flash from 'express-flash-2';
 import fs from 'fs';
-import path from 'path';
+import { resolve, join } from 'path';
 import ini from 'ini';
 import * as http from 'http';
 import mockMiddleWare from './middleware';
+import log from './utils/log';
 
-const config = require('../.mock.json');
+const config: any = {
+  port: 7001,
+  mockPath: './test/models',
+};
+if (fs.existsSync(resolve('./.mock.json'))) {
+  Object.assign(config, JSON.parse(fs.readFileSync(resolve('.', './.mock.json'), 'utf-8')));
+}
+
 const app: Express  = express();
 
-app.set('views', path.join(__dirname, 'views'));
+app.set('views', join(__dirname, 'views'));
 app.set('view engine', 'pug');
 
 app.use(bodyParser.json());
@@ -22,7 +30,6 @@ app.use(mockMiddleWare(config));
 
 app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
   let status = 500;
-  console.error(err);
   if (!Number.isNaN(Number.parseInt(err.message))) {
     status = Number.parseInt(err.message, 10);
   }
@@ -37,12 +44,12 @@ server.on('error', onError);
 server.on('listening', onListening);
 
 function onListening() {
-  let addr = server.address();
-  let bind = typeof addr === 'string'
+  const addr = server.address();
+  const bind = typeof addr === 'string'
     ? 'pipe ' + addr
     : 'port ' + addr.port;
 
-  console.log('Listening on ' + bind);
+  log.info('Listening on ' + bind);
 }
 
 function onError(error: any) {
@@ -50,18 +57,18 @@ function onError(error: any) {
     throw error;
   }
 
-  let bind = typeof config.port === 'string'
+  const bind = typeof config.port === 'string'
     ? 'Pipe ' + config.port
     : 'Port ' + config.port
 
   // handle specific listen errors with friendly messages
   switch (error.code) {
     case 'EACCES':
-      console.error(bind + ' requires elevated privileges');
+      log.error(bind + ' requires elevated privileges');
       process.exit(1);
       break;
     case 'EADDRINUSE':
-      console.error(bind + ' is already in use');
+      log.error(bind + ' is already in use');
       process.exit(1);
       break;
     default:

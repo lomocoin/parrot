@@ -2,7 +2,6 @@
 import fs from 'fs';
 import { resolve } from 'path';
 import Express from 'express';
-import path from 'path';
 import { pluralize } from 'inflected';
 import DataBase from './DataBase';
 import splitPath from './utils/splitPath';
@@ -10,7 +9,7 @@ import Repository from './storage/Repository';
 
 // TODO: load configs
 
-const getRecord = (record: { [key: string]: any }, splittedPath: Array<string[]>): any => {
+const getRecord = (record: { [key: string]: any }, splittedPath: string[][]): any => {
   if (splittedPath.length === 0) {
     return record;
   }
@@ -25,7 +24,7 @@ const getRecord = (record: { [key: string]: any }, splittedPath: Array<string[]>
   return subRecord;
 }
 
-const query = (repo: Repository, splittedPath: Array<string[]>) => {
+const query = (repo: Repository, splittedPath: string[][]) => {
   let resultSet = null;
   const [property, id] = splittedPath[0];
   if (id) {
@@ -38,10 +37,10 @@ const query = (repo: Repository, splittedPath: Array<string[]>) => {
 
 export default (config: any) => {
 
-  const models = (fs.readdirSync(resolve(__dirname, '../test/models'), 'utf-8') as string[])
+  const models = (fs.readdirSync(resolve('.', config.mockPath), 'utf-8') as string[])
     .map((name: string) => ({
       name: pluralize(name.replace(/\..*$/i, '').toLowerCase()),
-      path: `${resolve(__dirname, '../test/models')}/${name}`,
+      path: `${resolve('.', config.mockPath)}/${name}`,
     }))
 
   const db = new DataBase(models);

@@ -12,14 +12,16 @@ export default class Repository {
     this.data.set(record.id, record);
   }
   update(id: number, record: any): void {
-    this.data.set(id, Object.assign({}, this.data.get(id), record));
+    this.data.set(id, {...this.data.get(id), ...record});
   }
   delete(id: number): void {
     this.data.set(id, undefined);
   }
-  select(filter?: (r: BaseEntity, i: number) => {} | undefined): (any | undefined)[] {
+  select(filter?: (r: BaseEntity, i: number) => {} | undefined): Array<any | undefined> {
     const result = [...this.data.values()];
-    if (!filter) return result;
+    if (!filter) {
+      return result;
+    }
     return result.filter(filter);
   }
   selectOne(find: (r: BaseEntity, i: number) => boolean): any | undefined {
