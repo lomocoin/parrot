@@ -1,10 +1,10 @@
 import { pluralize } from 'inflected';
 import metaRepo from '../storage/MetaRepo';
-import { IRelationOption, RelationType, RelationTypeEnum } from './Relations';
+import { RelationOption, RelationType } from './Relations';
 
-const Relation = (type: RelationType) => (option: IRelationOption)  => (target: any, propertyName: string) => {
+const Relation = (type: RelationType) => (option: RelationOption)  => (target: any, propertyName: string) => {
   const entityName = pluralize(target.constructor.toString().split(' ')[1].toLowerCase());
-  metaRepo.pushRelation(entityName, RelationTypeEnum[type], {
+  metaRepo.pushRelation(entityName, type, {
     name: propertyName,
     option,
   });

@@ -1,7 +1,7 @@
 import { IProperty } from '../IProperty';
 import { IPropertyOption } from './';
 
-interface IBoolOption extends IPropertyOption {
+export interface IBoolOption extends IPropertyOption {
   value?: boolean;
 }
 

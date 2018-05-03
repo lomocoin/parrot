@@ -39,7 +39,7 @@ export const Entity = <T extends {new(...args:any[]):{}}>(constructor: T) => {
         });
       metaRepo.getMeta(entityName, 'enum')!
         .forEach(({ name, option }: IEnum) => {
-          const enums = option instanceof Array ? option : require((option.target as string));
+          const enums = option.target instanceof Array ? option : require((option.target as string));
           (this as any)[name] = getRandom(enums);
         });
       

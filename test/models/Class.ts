@@ -1,15 +1,21 @@
 import path from 'path';
 import { Entity } from '../../src/Entity';
-import { Number, String, Bool, Enum } from '../../src/types';
-import { OneToMany } from '../../src/relations';
+import { Column } from '../../src/decorators/Column';
+import { OneToMany } from '../../src/decorators/Relation';
 import Student from './Student';
 
 @Entity
 export default class Class {
-  @Enum(['One', 'Two', 'Three', 'Four'])
+  @Column({
+    type: 'enum',
+    target: ['One', 'Two', 'Three', 'Four'],
+  })
   name: string;
 
-  @Enum(path.resolve(__dirname, '../source/location.json'))
+  @Column({
+    type: 'enum',
+    target: path.resolve(__dirname, '../source/location.json'),
+  })
   location: { floor: number, room: number };
 
   @OneToMany({

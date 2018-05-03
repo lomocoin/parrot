@@ -1,11 +1,17 @@
 import { Entity } from '../../src/Entity';
-import { Number, String, Bool, Enum } from '../../src/types';
+import { Column } from '../../src/decorators/Column';
 
 @Entity
 export default class Student {
-  @String({ limit: [6, 10] })
+  @Column({
+    type: 'string',
+    limit: [6, 10],
+  })
   name: string;
 
-  @Number({ limit: [6, 12] })
+  @Column({
+    type: 'number',
+    limit: [6, 12]
+  })
   age: string;
 }

@@ -9,7 +9,7 @@ import {
   IManyToOne,
   IOneToMany,
   IOneToOne,
-  RelationType
+  RelationType,
 } from '../decorators/Relations';
 import MetaEntity from './MetaEntity';
 

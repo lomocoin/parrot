@@ -1,7 +1,7 @@
 import { IProperty } from '../IProperty';
 import { IPropertyOption } from './';
 
-interface INumberOption extends IPropertyOption {
+export interface INumberOption extends IPropertyOption {
   limit: [number, number]
 }
 
