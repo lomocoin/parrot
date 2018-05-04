@@ -11,7 +11,7 @@ export const ErrorMap = new Map<string, string>([
 
 /* tslint:disable:max-classes-per-file */
 @CustomError('400')
-export class BadeRequestError {};
+export class BadRequestError {};
 
 @CustomError('401')
 export class UnauthorizedError {};

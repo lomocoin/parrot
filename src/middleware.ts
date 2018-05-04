@@ -140,5 +140,5 @@ export default (config: any) => {
     } else {
       return res.status(405).end();
     }
-  })
+  });
 } 
