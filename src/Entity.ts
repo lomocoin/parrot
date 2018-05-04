@@ -1,3 +1,4 @@
+import { resolve } from 'path';
 import { pluralize } from 'inflected';
 import BaseEntity from './storage/BaseEntity';
 import {
@@ -25,6 +26,7 @@ export const Entity = <T extends {new(...args:any[]):{}}>(constructor: T) => {
   class Instance extends constructor implements BaseEntity {
     constructor(...args: any[]) {
       super(...args);
+      const [config] = args;
       metaRepo.getMeta(EntityName, 'string')!
         .forEach(({ name, option }: IString) => {
           (this as any)[name] = (args as any)[name] || getRandomString(option);
@@ -39,7 +41,7 @@ export const Entity = <T extends {new(...args:any[]):{}}>(constructor: T) => {
         });
       metaRepo.getMeta(EntityName, 'enum')!
         .forEach(({ name, option }: IEnum) => {
-          const enums = option.target instanceof Array ? option : require((option.target as string));
+          const enums = option.target instanceof Array ? option : require(resolve('.', config.models, (option.target as string)));
           (this as any)[name] = (args as any)[name] || getRandom(enums);
         });
       

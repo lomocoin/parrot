@@ -1,7 +1,7 @@
 import { IProperty } from '../IProperty';
 
 export interface IOneToManyOption {
-  targetTable: string,
+  target: string,
 }
 
 export interface IOneToMany extends IProperty {
