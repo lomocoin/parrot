@@ -13,3 +13,4 @@ const Relation = (type: RelationType) => (option: RelationOption)  => (target: a
 export const ManyToOne = Relation('ManyToOne');
 export const OneToMany = Relation('OneToMany');
 export const OneToOne = Relation('OneToOne');
+export const ManyToMany = Relation('ManyToMany');

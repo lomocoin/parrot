@@ -3,7 +3,8 @@ import { pluralize } from 'inflected';
 import BaseEntity from './storage/BaseEntity';
 import {
   IString,
-  INumber,
+  IInteger,
+  IDecimal,
   IBool,
   IEnum,
 } from './decorators/PropertyTypes';
@@ -16,7 +17,7 @@ import applyMixins from './utils/applyMixins';
 
 export interface MetaEntity {
   string: IString[];
-  number: INumber[];
+  number: IInteger[];
   bool: IBool[];
   enum: IEnum[];
 }
@@ -31,9 +32,15 @@ export const Entity = <T extends {new(...args:any[]):{}}>(constructor: T) => {
         .forEach(({ name, option }: IString) => {
           (this as any)[name] = (args as any)[name] || getRandomString(option);
         });
-      metaRepo.getMeta(EntityName, 'number')!
-        .forEach(({ name, option }: INumber) => {
+      metaRepo.getMeta(EntityName, 'integer')!
+        .forEach(({ name, option }: IInteger) => {
           (this as any)[name] = (args as any)[name] || getRandomNumber(option);
+        });
+      metaRepo.getMeta(EntityName, 'decimal')!
+        .forEach(({ name, option }: IDecimal) => {
+          const int = getRandomNumber(option);
+          const decimal = Math.random().toFixed(option.precition);
+          (this as any)[name] = (args as any)[name] || Number.parseFloat([int, decimal].join('.'));
         });
       metaRepo.getMeta(EntityName, 'bool')!
         .forEach(({ name, option }: IBool) => {

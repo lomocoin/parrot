@@ -46,7 +46,17 @@ export default class DataBase extends Map<string, Repository> {
         const source = repository!.select();
         source.forEach((record, index) => {
           repository!.update(record!.id, {
-            [propertyName]: this.get(pluralize(option.target.toLowerCase()))!.select((r) => r.id === index)
+            [propertyName]: this.get(pluralize(option.target.toLowerCase()))!.select((r, i) => i === index)
+          });
+        })
+      });
+      // mapping ManyToMany
+      (metaRepo.getMeta(name, 'ManyToMany') || []).map(({ name: propertyName, option }) => {
+        const repository = this.get(name);
+        const source = repository!.select();
+        source.forEach((record, index) => {
+          repository!.update(record!.id, {
+            [propertyName]: this.get(pluralize(option.target.toLowerCase()))!.select((r, i) => index % (i + 1) === 0)
           });
         })
       });

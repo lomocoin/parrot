@@ -1,8 +1,9 @@
 import {
   IString,
-  INumber,
+  IInteger,
   IBool,
   IEnum,
+  IDecimal,
 } from '../decorators/PropertyTypes';
 import {
   IManyToOne,
@@ -14,7 +15,8 @@ export default class MetaEntity extends Map<string, Set<any>> {
   constructor() {
     super();
     this.set('string', new Set<IString>())
-    this.set('number', new Set<INumber>())
+    this.set('integer', new Set<IInteger>())
+    this.set('decimal', new Set<IDecimal>())
     this.set('bool', new Set<IBool>())
     this.set('enum', new Set<IEnum>())
     this.set('OneToMany', new Set<IOneToMany>())

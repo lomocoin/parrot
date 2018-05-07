@@ -1,6 +1,7 @@
 import {
   IString,
-  INumber,
+  IInteger,
+  IDecimal,
   IBool,
   IEnum,
   PropertyType,
@@ -9,12 +10,13 @@ import {
   IManyToOne,
   IOneToMany,
   IOneToOne,
+  IManyToMany,
   RelationType,
 } from '../decorators/Relations';
 import MetaEntity from './MetaEntity';
 
 class MetaRepo extends Map<string, MetaEntity> {
-  pushProperty(entityName: string, type: PropertyType, property: IString | INumber | IBool | IEnum): void {
+  pushProperty(entityName: string, type: PropertyType, property: IString | IInteger | IDecimal | IBool | IEnum): void {
     if (!this.has(entityName)) {
       this.set(entityName, new MetaEntity());
     }
@@ -26,7 +28,7 @@ class MetaRepo extends Map<string, MetaEntity> {
     }
     return [...(this.get(entityName)!.get(type) || [])];
   };
-  pushRelation(entityName: string, type: RelationType, relation: IManyToOne | IOneToMany | IOneToOne): void {
+  pushRelation(entityName: string, type: RelationType, relation: IManyToOne | IOneToMany | IOneToOne | IManyToMany): void {
     if (!this.has(entityName)) {
       this.set(entityName, new MetaEntity())
     }

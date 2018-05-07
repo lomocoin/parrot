@@ -19,9 +19,6 @@ if (fs.existsSync(resolve('.', './.mock.json'))) {
 
 export const app: Express  = express();
 
-app.set('views', join(__dirname, 'views'));
-app.set('view engine', 'pug');
-
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
