@@ -6,10 +6,10 @@ import fs from 'fs';
 import { resolve, join } from 'path';
 import ini from 'ini';
 import * as http from 'http';
-import mockMiddleWare from './middleware';
+import { mockMiddleware } from './middleware';
 import log from './utils/log';
 
-const config: any = {
+export const config: any = {
   port: 7001,
   mockPath: './test/models',
 };
@@ -17,16 +17,13 @@ if (fs.existsSync(resolve('.', './.mock.json'))) {
   Object.assign(config, JSON.parse(fs.readFileSync(resolve('.', './.mock.json'), 'utf-8')));
 }
 
-const app: Express  = express();
-
-app.set('views', join(__dirname, 'views'));
-app.set('view engine', 'pug');
+export const app: Express  = express();
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 
-app.use(mockMiddleWare(config));
+app.use(mockMiddleware(config));
 
 app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
   let status = 500;
@@ -37,41 +34,3 @@ app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
 });
 
 app.set('port', config.port);
-
-const server = http.createServer(app);
-server.listen(config.port);
-server.on('error', onError);
-server.on('listening', onListening);
-
-function onListening() {
-  const addr = server.address();
-  const bind = typeof addr === 'string'
-    ? 'pipe ' + addr
-    : 'port ' + addr.port;
-
-  log.info('Listening on ' + bind);
-}
-
-function onError(error: any) {
-  if (error.syscall !== 'listen') {
-    throw error;
-  }
-
-  const bind = typeof config.port === 'string'
-    ? 'Pipe ' + config.port
-    : 'Port ' + config.port
-
-  // handle specific listen errors with friendly messages
-  switch (error.code) {
-    case 'EACCES':
-      log.error(bind + ' requires elevated privileges');
-      process.exit(1);
-      break;
-    case 'EADDRINUSE':
-      log.error(bind + ' is already in use');
-      process.exit(1);
-      break;
-    default:
-      throw error;
-  }
-}

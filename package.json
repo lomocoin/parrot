@@ -1,12 +1,15 @@
 {
   "name": "trade-game",
   "version": "1.0.0",
-  "main": "index.ts",
+  "main": "src/index.ts",
+  "bin": {
+    "": "bin/run.ts"
+  },
   "author": "ZhangRGK",
   "license": "MIT",
   "private": true,
   "scripts": {
-    "start": "ts-node src/server.ts",
+    "start": "ts-node bin/run.ts | ./node_modules/.bin/bunyan",
     "dev": "ts-node",
     "test": "jest --forceExit --coverage --verbose",
     "lint": "tslint -c tslint.json './src/**/*.ts'",

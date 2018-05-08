@@ -109,7 +109,7 @@ const deleteHandler = (db: DataBase, splittedPath: string[][]) => {
   }
 }
 
-export default (config: any) => {
+export const mockMiddleware = (config: any) => {
 
   const models = (fs.readdirSync(resolve('.', config.mockPath), 'utf-8') as string[])
     .map((name: string) => ({
@@ -117,7 +117,7 @@ export default (config: any) => {
       path: `${resolve('.', config.mockPath)}/${name}`,
     }))
   
-  const db = new DataBase(models);
+  const db = new DataBase(models, config);
   
   return errorWrap(async (req: Express.Request, res: Express.Response, next: Express.NextFunction) => {
     const splittedPath = splitPath(req.path);

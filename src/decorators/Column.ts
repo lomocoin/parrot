@@ -3,7 +3,8 @@ import metaRepo from '../storage/MetaRepo';
 import {
   PropertyOption,
   IString,
-  INumber,
+  IInteger,
+  IDecimal,
   IEnum,
   IBool,
 } from './PropertyTypes';
