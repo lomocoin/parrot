@@ -1,47 +1,88 @@
+import * as http from 'http';
+import express, { Express, Request, Response, NextFunction } from 'express';
+import bodyParser from 'body-parser';
+import cookieParser from 'cookie-parser';
+import flash from 'express-flash-2';
+import fs from 'fs';
+import { resolve, join } from 'path';
+import ini from 'ini';
+import { mockMiddleware } from './middleware';
 export { Entity } from './Entity';
 export { Column } from './decorators/Column';
 export { OneToMany, ManyToOne, OneToOne } from './decorators/Relation';
 export { mockMiddleware } from './middleware';
-import { app, config } from './server';
-import log from '../src/utils/log';
-import * as http from 'http';
+import log from './utils/log';
 
-export const run = () => {
-  const server = http.createServer(app);
-  server.listen(config.port);
-  server.on('error', onError);
-  server.on('listening', onListening);
+export class Server {
+  app: Express;
+  config: any;
 
-  function onListening() {
-    const addr = server.address();
-    const bind = typeof addr === 'string'
-      ? 'pipe ' + addr
-      : 'port ' + addr.port;
+  constructor(option: { config: string, quite: boolean }) {
 
-    log.info('Listening on ' + bind);
+    const config: any = {
+      port: 7001,
+      models: './test/models',
+      quite: false,
+    };
+    if (fs.existsSync(resolve('.', option.config))) {
+      Object.assign(config, JSON.parse(fs.readFileSync(resolve('.', option.config), 'utf-8')));
+    }
+    this.config = config;
+    this.app = express();
+    this.app.use(bodyParser.json());
+    this.app.use(bodyParser.urlencoded({ extended: false }));
+    this.app.use(cookieParser());
+
+    this.app.use(mockMiddleware(config));
+
+    this.app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
+      let status = 500;
+      if (!Number.isNaN(Number.parseInt(err.message))) {
+        status = Number.parseInt(err.message, 10);
+      }
+      res.status(status).end();
+    });
+
+    this.app.set('port', config.port);
   }
 
-  function onError(error: any) {
-    if (error.syscall !== 'listen') {
-      throw error;
+  run() {
+    const server = http.createServer(this.app);
+    server.listen(this.config.port);
+    server.on('error', onError);
+    server.on('listening', onListening);
+
+    function onListening() {
+      const addr = server.address();
+      const bind = typeof addr === 'string'
+        ? 'pipe ' + addr
+        : 'port ' + addr.port;
+
+      log.info('Listening on ' + bind);
     }
 
-    const bind = typeof config.port === 'string'
-      ? 'Pipe ' + config.port
-      : 'Port ' + config.port
-
-    // handle specific listen errors with friendly messages
-    switch (error.code) {
-      case 'EACCES':
-        log.error(bind + ' requires elevated privileges');
-        process.exit(1);
-        break;
-      case 'EADDRINUSE':
-        log.error(bind + ' is already in use');
-        process.exit(1);
-        break;
-      default:
+    function onError(error: any) {
+      if (error.syscall !== 'listen') {
         throw error;
+      }
+
+      const bind = typeof this.config.port === 'string'
+        ? 'Pipe ' + this.config.port
+        : 'Port ' + this.config.port
+
+      // handle specific listen errors with friendly messages
+      switch (error.code) {
+        case 'EACCES':
+          log.error(bind + ' requires elevated privileges');
+          process.exit(1);
+          break;
+        case 'EADDRINUSE':
+          log.error(bind + ' is already in use');
+          process.exit(1);
+          break;
+        default:
+          throw error;
+      }
     }
   }
 }

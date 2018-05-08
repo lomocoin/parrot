@@ -38,7 +38,9 @@ export const Entity = <T extends {new(...args:any[]):{}}>(constructor: T) => {
         });
       metaRepo.getMeta(EntityName, 'decimal')!
         .forEach(({ name, option }: IDecimal) => {
-          const int = getRandomNumber(option);
+          // because of getRandomNumber will reture number in collection of (min, max],
+          // but in decimal mode we want (min, max)
+          const int = getRandomNumber(option) - 1;
           const decimal = Math.random().toFixed(option.precition);
           (this as any)[name] = (args as any)[name] || Number.parseFloat([int, decimal].join('.'));
         });
