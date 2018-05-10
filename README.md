@@ -1,4 +1,6 @@
-# mock-api
+# Parrot
+
+a simple auto-generation mock service.
 
 ## folders
 
@@ -27,10 +29,17 @@ class Foo extends BaseEntity {
     name: string;
 
     @Column({
-        type: 'number'
-        limit: [4, 8]
+        type: 'integer',
+        limit: [4, 8],
     })
-    balance: number;
+    quantity: number;
+
+    @Column({
+        type: 'decimal',
+        limit: 100,
+        precision: 2,
+    })
+    money: number;
 
     @Column({
         type: 'enum',
@@ -43,14 +52,32 @@ class Foo extends BaseEntity {
         target: './address'
     })
     address: any;
+
+    @Column({
+        type: 'bool'
+        value: false,
+    })
+    isDel: boolean;
 }
 ~~~
 
-### configure mock 
+### configure mock server
 
 ~~~
 {
   "port": 3000,
   "models": "./test/models"
+}
+~~~
+
+### start server
+
+package.json
+~~~
+{
+    ...,
+    "scripts": {
+        "mock": "parrot -c .mock.json"
+    }
 }
 ~~~
