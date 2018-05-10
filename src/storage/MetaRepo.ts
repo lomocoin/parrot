@@ -15,7 +15,7 @@ import {
 } from '../decorators/Relations';
 import MetaEntity from './MetaEntity';
 
-class MetaRepo extends Map<string, MetaEntity> {
+export class MetaRepo extends Map<string, MetaEntity> {
   pushProperty(entityName: string, type: PropertyType, property: IString | IInteger | IDecimal | IBool | IEnum): void {
     if (!this.has(entityName)) {
       this.set(entityName, new MetaEntity());
