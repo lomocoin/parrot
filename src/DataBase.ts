@@ -2,7 +2,7 @@ import { pluralize } from 'inflected';
 import Repository from './storage/Repository';
 import metaRepo from './storage/MetaRepo';
 
-interface IModel {
+export interface IModel {
   name: string;
   path: string;
 }
