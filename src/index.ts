@@ -21,7 +21,7 @@ export class Server {
 
     const config: any = {
       port: 7001,
-      models: './test/models',
+      include: './test/models',
       quite: false,
     };
     if (fs.existsSync(resolve('.', option.config))) {

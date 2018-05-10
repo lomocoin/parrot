@@ -1,6 +1,6 @@
 
-import fs from 'fs';
 import { resolve } from 'path';
+import glob from 'glob';
 import Express from 'express';
 import { pluralize } from 'inflected';
 import DataBase from './DataBase';
@@ -111,10 +111,11 @@ const deleteHandler = (db: DataBase, splittedPath: string[][]) => {
 
 export const mockMiddleware = (config: any) => {
 
-  const models = (fs.readdirSync(resolve('.', config.models), 'utf-8') as string[])
+  const models = (glob.sync(`${config.include}.js`))
+    .filter((name: string) => name.endsWith('.js'))
     .map((name: string) => ({
       name: pluralize(name.replace(/\..*$/i, '').toLowerCase()),
-      path: `${resolve('.', config.models)}/${name}`,
+      path: resolve('.', name),
     }))
   
   const db = new DataBase(models, config);

@@ -67,3 +67,6 @@ docs
 .cache
 yarn-*.log
 sessions
+test/**/*.js
+test/**/*.d.ts
+test/**/*.js.map
