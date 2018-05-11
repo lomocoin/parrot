@@ -111,8 +111,8 @@ const deleteHandler = (db: DataBase, splittedPath: string[][]) => {
 
 export const mockMiddleware = (config: any) => {
 
-  const models = (glob.sync(`${config.include}.js`))
-    .filter((name: string) => name.endsWith('.js'))
+  const models = config.include.map((p: string) => glob.sync(`${p}.js`))
+    .reduce((sum: string[], array: string[]) => [...sum, ...array], [])
     .map((name: string) => ({
       name: pluralize(name.replace(/\..*$/i, '').toLowerCase()),
       path: resolve('.', name),

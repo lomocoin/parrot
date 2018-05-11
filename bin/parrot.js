@@ -16,8 +16,6 @@ const option = {
   quite: !!commander.quite,
 };
 
-console.log(require(resolve('.', option.config)));
-
 shell.exec(`tsc -p ${resolve('.', option.config)}`);
 
 new Server(option).run();

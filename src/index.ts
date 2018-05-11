@@ -21,19 +21,20 @@ export class Server {
 
     const config: any = {
       port: 7001,
-      include: './test/models',
+      include: ['./models'],
       quite: false,
     };
     if (fs.existsSync(resolve('.', option.config))) {
       Object.assign(config, JSON.parse(fs.readFileSync(resolve('.', option.config), 'utf-8')));
     }
     this.config = config;
+    console.log(this.config);
     this.app = express();
     this.app.use(bodyParser.json());
     this.app.use(bodyParser.urlencoded({ extended: false }));
     this.app.use(cookieParser());
 
-    this.app.use(mockMiddleware(config));
+    this.app.use(mockMiddleware(this.config));
 
     this.app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
       let status = 500;
@@ -43,7 +44,7 @@ export class Server {
       res.status(status).end();
     });
 
-    this.app.set('port', config.port);
+    this.app.set('port', this.config.port);
   }
 
   run() {
