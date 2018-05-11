@@ -1,4 +1,4 @@
-import { Entity, Column, OneToMany } from '../../src';
+import { Entity, Column, OneToMany } from '../../dist';
 import Todo from './Todo';
 
 @Entity

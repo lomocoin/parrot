@@ -1,4 +1,4 @@
-import { Entity, Column, OneToOne } from '../../src';
+import { Entity, Column, OneToOne } from '../../dist';
 import TodoExtra from './TodoExtra';
 
 @Entity

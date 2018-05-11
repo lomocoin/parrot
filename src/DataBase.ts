@@ -1,3 +1,4 @@
+import { relative, dirname } from 'path';
 import { pluralize } from 'inflected';
 import Repository from './storage/Repository';
 import metaRepo from './storage/MetaRepo';
@@ -13,10 +14,10 @@ export default class DataBase extends Map<string, Repository> {
     // create repositorys and first record
     models.forEach(({ name, path }: { name: string, path: string }) => {
       const Entity = require(path).default;
-      const record = new Entity(config);
+      const record = new Entity(config, path);
       const repository = new Repository(Entity);
-      repository.insert(record)
-      this.set(name, repository);
+      repository.insert(record);
+      this.set(name.replace(`${dirname(name)}/`, ''), repository);
     });
 
     models.forEach(({ name }) => {

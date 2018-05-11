@@ -1,5 +1,4 @@
-import { Entity } from "../../src/Entity";
-import { Column } from "../../src/decorators/Column";
+import { Entity, Column } from "../../dist";
 
 export interface IUserModel {
   id: number;

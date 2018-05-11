@@ -1,4 +1,4 @@
-import { resolve } from 'path';
+import { resolve, dirname } from 'path';
 import { pluralize } from 'inflected';
 import BaseEntity from './storage/BaseEntity';
 import {
@@ -22,12 +22,14 @@ export interface MetaEntity {
   enum: IEnum[];
 }
 
-export const Entity = <T extends {new(...args:any[]):{}}>(constructor: T) => {
+export interface IEntityInstance { new(...args: any[]): any }
+
+export const Entity = (constructor: IEntityInstance): IEntityInstance => {
   const EntityName = pluralize(constructor.toString().split(' ')[1].toLowerCase());
-  class Instance extends constructor implements BaseEntity {
+ class EntityInstance extends constructor implements BaseEntity {
     constructor(...args: any[]) {
       super(...args);
-      const [config] = args;
+      const [config, basePath] = args;
       metaRepo.getMeta(EntityName, 'string')!
         .forEach(({ name, option }: IString) => {
           (this as any)[name] = (args as any)[name] || getRandomString(option);
@@ -50,7 +52,7 @@ export const Entity = <T extends {new(...args:any[]):{}}>(constructor: T) => {
         });
       metaRepo.getMeta(EntityName, 'enum')!
         .forEach(({ name, option }: IEnum) => {
-          const enums = option.target instanceof Array ? option : require(resolve('.', config.models, (option.target as string)));
+          const enums = option.target instanceof Array ? option : require(resolve('.', dirname(basePath), (option.target as string)));
           (this as any)[name] = (args as any)[name] || getRandom(enums);
         });
       
@@ -58,18 +60,18 @@ export const Entity = <T extends {new(...args:any[]):{}}>(constructor: T) => {
       this.createdAt = new Date().getTime();
     }
 
-    protected static sequence: number = 1;
-    protected static EntityName: string = EntityName;
+    static sequence: number = 1;
+    static EntityName: string = EntityName;
 
     static nextVal() {
-      return Instance.sequence ++;
+      return EntityInstance.sequence ++;
     }
   
     id: number;
     createdAt: number;
   }
 
-  applyMixins(Instance, [BaseEntity]);
+  applyMixins(EntityInstance, [BaseEntity]);
 
-  return Instance;
+  return EntityInstance;
 }
