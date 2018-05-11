@@ -22,7 +22,7 @@ export interface MetaEntity {
   enum: IEnum[];
 }
 
-export interface IEntityInstance { new(...args: any[]): any };
+export interface IEntityInstance { new(...args: any[]): any }
 
 export const Entity = (constructor: IEntityInstance): IEntityInstance => {
   const EntityName = pluralize(constructor.toString().split(' ')[1].toLowerCase());
