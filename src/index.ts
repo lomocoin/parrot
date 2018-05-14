@@ -21,13 +21,13 @@ export class Server {
 
     const config: any = {
       port: 7001,
-      include: ['./models'],
+      outDir: ['./.mockCache'],
       quite: false,
     };
     if (fs.existsSync(resolve('.', option.config))) {
       Object.assign(config, JSON.parse(fs.readFileSync(resolve('.', option.config), 'utf-8')));
     }
-    this.config = config;
+    this.config = { ...config, ...{ outDir: config.compilerOptions.outDir || config.include } };
     this.app = express();
     this.app.use(bodyParser.json());
     this.app.use(bodyParser.urlencoded({ extended: false }));
