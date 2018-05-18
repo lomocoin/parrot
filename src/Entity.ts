@@ -7,12 +7,15 @@ import {
   IDecimal,
   IBool,
   IEnum,
+  IDate,
+  DateDisplayType,
 } from './decorators/PropertyTypes';
 import metaRepo from './storage/MetaRepo';
 import getRandomString from './utils/getRandomString';
 import getRandomNumber from './utils/getRandomNumber';
 import getRandomBoolean from './utils/getRandomBoolean';
 import getRandom from './utils/getRandom';
+import getRandomDate from './utils/getRandomDate';
 import applyMixins from './utils/applyMixins';
 
 export interface MetaEntity {
@@ -54,6 +57,19 @@ export const Entity = (constructor: IEntityInstance): IEntityInstance => {
         .forEach(({ name, option }: IEnum) => {
           const enums = option.target instanceof Array ? option : require(resolve('.', dirname(basePath), (option.target as string)));
           (this as any)[name] = (args as any)[name] || getRandom(enums);
+        });
+      metaRepo.getMeta(EntityName, 'date')!
+        .forEach(({ name, option }: IDate) => {
+          const randomDate = getRandomDate(option.format, option.start, option.end);
+          if ((args as any)[name]) {
+            (this as any)[name] = (args as any)[name];
+          } else if (!option.display || option.display === 'date') {
+            (this as any)[name] = randomDate.toDate();
+          } else if (option.display === 'string') {
+            (this as any)[name] = randomDate.format(option.format);
+          } else {
+            (this as any)[name] = randomDate.valueOf();
+          }
         });
       
       this.id = BaseEntity.nextVal();
