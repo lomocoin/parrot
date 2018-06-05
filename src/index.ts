@@ -27,12 +27,16 @@ export class Server {
     if (fs.existsSync(resolve('.', option.config))) {
       Object.assign(config, JSON.parse(fs.readFileSync(resolve('.', option.config), 'utf-8')));
     }
-    this.config = { ...config, ...{ outDir: config.compilerOptions.outDir || config.include } };
+    this.config = { ...config, ...{
+      outDir: config.compilerOptions.outDir || config.include,
+      imagePath: config.imagePath || './.mockCache/imgs',
+    }};
     this.app = express();
     this.app.use(bodyParser.json());
     this.app.use(bodyParser.urlencoded({ extended: false }));
     this.app.use(cookieParser());
 
+    this.app.use('/static', express.static(resolve('.', config.imagePath)))
     this.app.use(mockMiddleware(this.config));
 
     this.app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
