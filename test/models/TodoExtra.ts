@@ -1,4 +1,4 @@
-import { Entity, Column } from '../../src';
+import { Entity, Column } from '../../dist';
 
 @Entity
 export default class TodoExtra {

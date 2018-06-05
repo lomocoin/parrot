@@ -3,13 +3,14 @@ import { IInteger, IIntegerOption } from './IInteger';
 import { IDecimal, IDecimalOption } from './IDecimal';
 import { IBool, IBoolOption } from './IBool';
 import { IEnum, IEnumOption } from './IEnum';
+import { IDate, IDateOption, DateDisplayType } from './IDate';
 
 export interface IPropertyOption {
   type: PropertyType;
 }
-export type PropertyOption = IStringOption | IIntegerOption | IEnumOption | IBoolOption;
+export type PropertyOption = IStringOption | IIntegerOption | IEnumOption | IBoolOption | IDateOption;
 
-export type PropertyType = 'string' | 'integer' | 'decimal' | 'enum' | 'bool'; 
+export type PropertyType = 'string' | 'integer' | 'decimal' | 'enum' | 'bool' | 'date'; 
 
 export {
   IString,
@@ -17,4 +18,6 @@ export {
   IDecimal,
   IBool,
   IEnum,
+  IDate,
+  DateDisplayType,
 }

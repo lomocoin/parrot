@@ -1,4 +1,5 @@
 {
+  "port": 3000,
   "compilerOptions": {
     "module": "commonjs",
     "esModuleInterop": true,
@@ -14,8 +15,8 @@
     "strictNullChecks": true,
     "paths": {
       "*": [
-        "node_modules/*",
-      ],
+        "node_modules/*"
+      ]
     }
   },
   "include": [

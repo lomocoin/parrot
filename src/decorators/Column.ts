@@ -1,13 +1,6 @@
 import { pluralize } from 'inflected';
 import metaRepo from '../storage/MetaRepo';
-import {
-  PropertyOption,
-  IString,
-  IInteger,
-  IDecimal,
-  IEnum,
-  IBool,
-} from './PropertyTypes';
+import { PropertyOption } from './PropertyTypes';
 
 
 export const Column = (option: PropertyOption)  => (target: any, propertyName: string) => {

@@ -1,7 +1,7 @@
 export default class BaseEntity {
 
-  protected static sequence: number = 0;
-  protected static EntityName: string;
+  static sequence: number = 0;
+  static EntityName: string;
 
   static nextVal() {
     return BaseEntity.sequence ++;

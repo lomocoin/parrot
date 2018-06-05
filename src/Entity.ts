@@ -1,4 +1,4 @@
-import { resolve } from 'path';
+import { resolve, dirname } from 'path';
 import { pluralize } from 'inflected';
 import BaseEntity from './storage/BaseEntity';
 import {
@@ -7,12 +7,15 @@ import {
   IDecimal,
   IBool,
   IEnum,
+  IDate,
+  DateDisplayType,
 } from './decorators/PropertyTypes';
 import metaRepo from './storage/MetaRepo';
 import getRandomString from './utils/getRandomString';
 import getRandomNumber from './utils/getRandomNumber';
 import getRandomBoolean from './utils/getRandomBoolean';
 import getRandom from './utils/getRandom';
+import getRandomDate from './utils/getRandomDate';
 import applyMixins from './utils/applyMixins';
 
 export interface MetaEntity {
@@ -22,12 +25,14 @@ export interface MetaEntity {
   enum: IEnum[];
 }
 
-export const Entity = <T extends {new(...args:any[]):{}}>(constructor: T) => {
+export interface IEntityInstance { new(...args: any[]): any }
+
+export const Entity = (constructor: IEntityInstance): IEntityInstance => {
   const EntityName = pluralize(constructor.toString().split(' ')[1].toLowerCase());
-  class Instance extends constructor implements BaseEntity {
+ class EntityInstance extends constructor implements BaseEntity {
     constructor(...args: any[]) {
       super(...args);
-      const [config] = args;
+      const [config, basePath] = args;
       metaRepo.getMeta(EntityName, 'string')!
         .forEach(({ name, option }: IString) => {
           (this as any)[name] = (args as any)[name] || getRandomString(option);
@@ -50,26 +55,39 @@ export const Entity = <T extends {new(...args:any[]):{}}>(constructor: T) => {
         });
       metaRepo.getMeta(EntityName, 'enum')!
         .forEach(({ name, option }: IEnum) => {
-          const enums = option.target instanceof Array ? option : require(resolve('.', config.models, (option.target as string)));
+          const enums = option.target instanceof Array ? option : require(resolve('.', dirname(basePath), (option.target as string)));
           (this as any)[name] = (args as any)[name] || getRandom(enums);
+        });
+      metaRepo.getMeta(EntityName, 'date')!
+        .forEach(({ name, option }: IDate) => {
+          const randomDate = getRandomDate(option.format, option.start, option.end);
+          if ((args as any)[name]) {
+            (this as any)[name] = (args as any)[name];
+          } else if (!option.display || option.display === 'date') {
+            (this as any)[name] = randomDate.toDate();
+          } else if (option.display === 'string') {
+            (this as any)[name] = randomDate.format(option.format);
+          } else {
+            (this as any)[name] = randomDate.valueOf();
+          }
         });
       
       this.id = BaseEntity.nextVal();
       this.createdAt = new Date().getTime();
     }
 
-    protected static sequence: number = 1;
-    protected static EntityName: string = EntityName;
+    static sequence: number = 1;
+    static EntityName: string = EntityName;
 
     static nextVal() {
-      return Instance.sequence ++;
+      return EntityInstance.sequence ++;
     }
   
     id: number;
     createdAt: number;
   }
 
-  applyMixins(Instance, [BaseEntity]);
+  applyMixins(EntityInstance, [BaseEntity]);
 
-  return Instance;
+  return EntityInstance;
 }
