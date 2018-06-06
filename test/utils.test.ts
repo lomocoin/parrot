@@ -118,4 +118,8 @@ describe('splitPath', () => {
       ['students', '2'],
     ])
   })
+  test('should get empty arry from a undesirable string', () => {
+    const path = '/';
+    expect(splitPath(path)).toMatchObject([]);
+  })
 });
