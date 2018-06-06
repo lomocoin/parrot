@@ -3,5 +3,5 @@ export default ({ limit }: { limit: [number, number] | number }): number => {
     limit = [0, limit];
   }
   const [low, high] = limit;
-  return Math.ceil(Math.random() * (high - low) + low);
+  return Number.parseInt((Math.random() * (high - low) + low).toFixed());
 }

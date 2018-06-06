@@ -21,7 +21,7 @@
   "linterOptions": {
     "exclude": [
       "node_modules",
-      "test"
+      "test/**/*"
     ]
   }
 }
