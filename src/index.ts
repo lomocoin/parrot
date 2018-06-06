@@ -16,7 +16,7 @@ import log from './utils/log';
 export class Server {
   app: Express;
   config: any;
-  tokens: Set<string>;
+  tokens: Set<string> = new Set<string>();
 
   constructor(option: { config: string, quite: boolean }) {
 
@@ -42,8 +42,8 @@ export class Server {
       if (
         !username
         || !password
-        || username !== config.auth.username
-        || password !== config.auth.password
+        || username !== this.config.auth.username
+        || password !== this.config.auth.password
       ) {
         return res.status(422).end();
       }
@@ -60,9 +60,9 @@ export class Server {
       return res.status(200).end();
     })
 
-    this.app.use('/static', express.static(resolve('.', config.imagePath)))
+    this.app.use('/static', express.static(resolve('.', this.config.imagePath)))
     this.app.use((req: Request, res: Response, next: NextFunction) => {
-      if ([...config.auth.whiteList, '/signIn'].indexOf(req.url) >= 0) {
+      if ([...this.config.auth.whiteList, '/signIn'].indexOf(req.url) >= 0) {
         return next();
       }
       const token = req.get('authorization');
