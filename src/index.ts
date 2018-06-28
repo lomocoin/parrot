@@ -1,11 +1,11 @@
 import * as http from 'http';
+import fs from 'fs';
+import { resolve, join } from 'path';
 import express, { Express, Request, Response, NextFunction } from 'express';
 import bodyParser from 'body-parser';
 import cookieParser from 'cookie-parser';
 import flash from 'express-flash-2';
-import fs from 'fs';
-import { resolve, join } from 'path';
-import ini from 'ini';
+import uuidV4 from 'uuid/v4';
 import { mockMiddleware } from './middleware';
 export { Entity } from './Entity';
 export { Column } from './decorators/Column';
@@ -16,6 +16,7 @@ import log from './utils/log';
 export class Server {
   app: Express;
   config: any;
+  tokens: Set<string> = new Set<string>();
 
   constructor(option: { config: string, quite: boolean }) {
 
@@ -27,12 +28,50 @@ export class Server {
     if (fs.existsSync(resolve('.', option.config))) {
       Object.assign(config, JSON.parse(fs.readFileSync(resolve('.', option.config), 'utf-8')));
     }
-    this.config = { ...config, ...{ outDir: config.compilerOptions.outDir || config.include } };
+    this.config = { ...config, ...{
+      outDir: config.compilerOptions.outDir || config.include,
+      imagePath: config.imagePath || './.mockCache/imgs',
+    }};
     this.app = express();
     this.app.use(bodyParser.json());
     this.app.use(bodyParser.urlencoded({ extended: false }));
     this.app.use(cookieParser());
+    this.app.post('/signIn', (req: Request, res: Response) => {
+      const { username, password } = req.body;
 
+      if (
+        !username
+        || !password
+        || username !== this.config.auth.username
+        || password !== this.config.auth.password
+      ) {
+        return res.status(422).end();
+      }
+      const token = uuidV4();
+      this.tokens.add(token);
+      return res.status(200).json(token);
+    });
+    this.app.post('/signOut', (req: Request, res: Response) => {
+      const token = req.get('authorization');
+      if (!token) {
+        return res.status(400).end();
+      }
+      this.tokens.delete(token);
+      return res.status(200).end();
+    })
+
+    this.app.use('/static', express.static(resolve('.', this.config.imagePath)))
+    this.app.use((req: Request, res: Response, next: NextFunction) => {
+      if ([...this.config.auth.whiteList, '/signIn'].indexOf(req.url) >= 0) {
+        return next();
+      }
+      const token = req.get('authorization');
+
+      if (!token || !this.tokens.has(token)) {
+        return res.status(401).end();
+      }
+      next();
+    })
     this.app.use(mockMiddleware(this.config));
 
     this.app.use((err: Error, req: Request, res: Response, next: NextFunction) => {

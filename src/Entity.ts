@@ -8,14 +8,17 @@ import {
   IBool,
   IEnum,
   IDate,
+  IImage,
   DateDisplayType,
 } from './decorators/PropertyTypes';
 import metaRepo from './storage/MetaRepo';
+import imageRepo from './storage/ImageRepo';
 import getRandomString from './utils/getRandomString';
 import getRandomNumber from './utils/getRandomNumber';
 import getRandomBoolean from './utils/getRandomBoolean';
 import getRandom from './utils/getRandom';
 import getRandomDate from './utils/getRandomDate';
+import getRandomImage from './utils/getRandomImage';
 import applyMixins from './utils/applyMixins';
 
 export interface MetaEntity {
@@ -33,6 +36,7 @@ export const Entity = (constructor: IEntityInstance): IEntityInstance => {
     constructor(...args: any[]) {
       super(...args);
       const [config, basePath] = args;
+      imageRepo.setImagePath(config.imagePath);
       metaRepo.getMeta(EntityName, 'string')!
         .forEach(({ name, option }: IString) => {
           (this as any)[name] = (args as any)[name] || getRandomString(option);
@@ -70,6 +74,11 @@ export const Entity = (constructor: IEntityInstance): IEntityInstance => {
           } else {
             (this as any)[name] = randomDate.valueOf();
           }
+        });
+      metaRepo.getMeta(EntityName, 'image')!
+        .forEach(({ name, option: { width, height } }: IImage) => {
+          const relativePath = imageRepo.setImage(width, height);
+          (this as any)[name] = `/static/${relativePath}`;
         });
       
       this.id = BaseEntity.nextVal();
