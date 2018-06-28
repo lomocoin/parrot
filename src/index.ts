@@ -4,7 +4,6 @@ import { resolve, join } from 'path';
 import express, { Express, Request, Response, NextFunction } from 'express';
 import bodyParser from 'body-parser';
 import cookieParser from 'cookie-parser';
-import flash from 'express-flash-2';
 import uuidV4 from 'uuid/v4';
 import { mockMiddleware } from './middleware';
 export { Entity } from './Entity';
