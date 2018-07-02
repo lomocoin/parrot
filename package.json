@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "types": "dist/index.d.ts",
   "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
   "bin": {
     "parrot": "./bin/parrot.js"
   },
