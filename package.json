@@ -15,6 +15,7 @@
     "test": "jest --forceExit --coverage --verbose",
     "lint": "tslint -c tslint.json './src/**/*.ts'",
     "prebuild": "rimraf ./dist",
+    "preinstall": "npm run build",
     "build": "tsc"
   },
   "jest": {
