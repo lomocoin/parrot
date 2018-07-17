@@ -29,7 +29,6 @@ export class Server {
     }
     this.config = { ...config, ...{
       outDir: config.compilerOptions.outDir || config.include,
-      imagePath: config.imagePath || './.mockCache/imgs',
     }};
     this.app = express();
     this.app.use(bodyParser.json());
@@ -59,7 +58,6 @@ export class Server {
       return res.status(200).end();
     })
 
-    this.app.use('/static', express.static(resolve('.', this.config.imagePath)))
     this.app.use((req: Request, res: Response, next: NextFunction) => {
       if ([...this.config.auth.whiteList, '/signIn'].indexOf(req.url) >= 0) {
         return next();
