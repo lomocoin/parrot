@@ -16,6 +16,7 @@ import getRandomBoolean from './utils/getRandomBoolean';
 import getRandom from './utils/getRandom';
 import getRandomDate from './utils/getRandomDate';
 import applyMixins from './utils/applyMixins';
+import log from './utils/log';
 
 export interface MetaEntity {
   string: IString[];
@@ -31,8 +32,9 @@ export const Entity = (recordCount: number) => (constructor: IEntityInstance): I
   class EntityInstance extends constructor implements BaseEntity {
     constructor(...args: any[]) {
       super(...args);
-      console.log(args);
       const [basePath] = args;
+      log.debug(args);
+      log.debug(basePath);
       metaRepo.getMeta(EntityName, 'string')!
         .forEach(({ name, option }: IString) => {
           (this as any)[name] = (args as any)[name] || getRandomString(option);
