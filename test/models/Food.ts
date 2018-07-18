@@ -1,4 +1,4 @@
-import { Column, Entity } from '../../src/index';
+import { Column, Entity } from '../../dist/index';
 
 @Entity(5)
 class Food {

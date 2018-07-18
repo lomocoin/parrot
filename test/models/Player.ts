@@ -1,4 +1,4 @@
-import { Entity, Column } from '../../src/index';
+import { Entity, Column } from '../../dist/index';
 
 @Entity(5)
 class Bar {
