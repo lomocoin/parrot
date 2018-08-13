@@ -42,7 +42,6 @@ class Server {
         }
         this.config = Object.assign({}, config, {
             outDir: config.compilerOptions.outDir || config.include,
-            imagePath: config.imagePath || './.mockCache/imgs'
         });
         this.app = express_1.default();
         this.app.use(body_parser_1.default.json());
@@ -75,7 +74,6 @@ class Server {
             this.tokens.delete(token);
             return res.status(200).end();
         });
-        this.app.use('/static', express_1.default.static(path_1.resolve('.', this.config.imagePath)));
         this.app.use((req, res, next) => {
             if ([...this.config.auth.whiteList, '/signIn'].indexOf(req.url) >= 0) {
                 return next();

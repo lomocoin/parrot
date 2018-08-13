@@ -7,15 +7,18 @@ const path_1 = require("path");
 const inflected_1 = require("inflected");
 const Repository_1 = __importDefault(require("./storage/Repository"));
 const MetaRepo_1 = __importDefault(require("./storage/MetaRepo"));
+const range_1 = __importDefault(require("./utils/range"));
 class DataBase extends Map {
     constructor(models, config) {
         super();
         // create repositorys and first record
         models.forEach(({ name, path }) => {
             const Entity = require(path).default;
-            const record = new Entity(config, path);
             const repository = new Repository_1.default(Entity);
-            repository.insert(record);
+            range_1.default(Entity.recordCount).forEach(() => {
+                const record = new Entity(config, path);
+                repository.insert(record);
+            });
             this.set(name.replace(`${path_1.dirname(name)}/`, ''), repository);
         });
         models.forEach(({ name }) => {

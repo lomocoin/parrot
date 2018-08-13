@@ -79,16 +79,16 @@ const putHandler = (db, splittedPath, params) => {
     else if (splittedPath.length === 1) {
         const [repoName, recordId] = splittedPath[splittedPath.length - 1];
         repo = db.get(repoName);
-        repo.update(Number.parseInt(recordId), params);
+        repo.update(Number.parseInt(recordId, 10), params);
     }
     else {
         const [repoName, recordId] = splittedPath[splittedPath.length - 1];
         const [parentRepoName, parentRecordId] = splittedPath[splittedPath.length - 2];
         repo = db.get(repoName);
-        repo.update(Number.parseInt(recordId), params);
+        repo.update(Number.parseInt(recordId, 10), params);
         parentRepo = db.get(parentRepoName);
         const parentRecord = parentRepo.selectOne((r) => r.id === Number.parseInt(parentRecordId, 10));
-        parentRepo.update(Number.parseInt(parentRecordId), {
+        parentRepo.update(Number.parseInt(parentRecordId, 10), {
             [repo.Entity.EntityName]: [...parentRecord[repo.Entity.EntityName].map((r) => (r.id === recordId ? Object.assign({}, params, r) : r))],
         });
     }
@@ -102,16 +102,16 @@ const deleteHandler = (db, splittedPath) => {
     else if (splittedPath.length === 1) {
         const [repoName, recordId] = splittedPath[splittedPath.length - 1];
         repo = db.get(repoName);
-        repo.delete(Number.parseInt(recordId));
+        repo.delete(Number.parseInt(recordId, 10));
     }
     else {
         const [repoName, recordId] = splittedPath[splittedPath.length - 1];
         const [parentRepoName, parentRecordId] = splittedPath[splittedPath.length - 2];
         repo = db.get(repoName);
-        repo.delete(Number.parseInt(recordId));
+        repo.delete(Number.parseInt(recordId, 10));
         parentRepo = db.get(parentRepoName);
         const parentRecord = parentRepo.selectOne((r) => r.id === Number.parseInt(parentRecordId, 10));
-        parentRepo.update(Number.parseInt(parentRecordId), {
+        parentRepo.update(Number.parseInt(parentRecordId, 10), {
             [repo.Entity.EntityName]: [...parentRecord[repo.Entity.EntityName].filter((r) => (r.id !== recordId))],
         });
     }

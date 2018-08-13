@@ -7,20 +7,21 @@ const path_1 = require("path");
 const inflected_1 = require("inflected");
 const BaseEntity_1 = __importDefault(require("./storage/BaseEntity"));
 const MetaRepo_1 = __importDefault(require("./storage/MetaRepo"));
-const ImageRepo_1 = __importDefault(require("./storage/ImageRepo"));
 const getRandomString_1 = __importDefault(require("./utils/getRandomString"));
 const getRandomNumber_1 = __importDefault(require("./utils/getRandomNumber"));
 const getRandomBoolean_1 = __importDefault(require("./utils/getRandomBoolean"));
 const getRandom_1 = __importDefault(require("./utils/getRandom"));
 const getRandomDate_1 = __importDefault(require("./utils/getRandomDate"));
 const applyMixins_1 = __importDefault(require("./utils/applyMixins"));
-exports.Entity = (constructor) => {
+const log_1 = __importDefault(require("./utils/log"));
+exports.Entity = (recordCount) => (constructor) => {
     const EntityName = inflected_1.pluralize(constructor.toString().split(' ')[1].toLowerCase());
     class EntityInstance extends constructor {
         constructor(...args) {
             super(...args);
-            const [config, basePath] = args;
-            ImageRepo_1.default.setImagePath(config.imagePath);
+            const [basePath] = args;
+            log_1.default.debug(args);
+            log_1.default.debug(basePath);
             MetaRepo_1.default.getMeta(EntityName, 'string')
                 .forEach(({ name, option }) => {
                 this[name] = args[name] || getRandomString_1.default(option);
@@ -71,6 +72,7 @@ exports.Entity = (constructor) => {
     }
     EntityInstance.sequence = 1;
     EntityInstance.EntityName = EntityName;
+    EntityInstance.recordCount = recordCount || 1;
     applyMixins_1.default(EntityInstance, [BaseEntity_1.default]);
     return EntityInstance;
 };
