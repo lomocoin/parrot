@@ -29,13 +29,9 @@ export class Server {
         JSON.parse(fs.readFileSync(resolve('.', option.config), 'utf-8'))
       );
     }
-    this.config = {
-      ...config,
-      ...{
-        outDir: config.compilerOptions.outDir || config.include,
-        imagePath: config.imagePath || './.mockCache/imgs'
-      }
-    };
+    this.config = { ...config, ...{
+      outDir: config.compilerOptions.outDir || config.include,
+    }};
     this.app = express();
     this.app.use(bodyParser.json());
     this.app.use(bodyParser.urlencoded({ extended: false }));
@@ -71,10 +67,6 @@ export class Server {
       return res.status(200).end();
     });
 
-    this.app.use(
-      '/static',
-      express.static(resolve('.', this.config.imagePath))
-    );
     this.app.use((req: Request, res: Response, next: NextFunction) => {
       if ([...this.config.auth.whiteList, '/signIn'].indexOf(req.url) >= 0) {
         return next();
