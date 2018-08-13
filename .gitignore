@@ -58,7 +58,6 @@ typings/
 .env
 .env*
 
-dist/
 package-lock.json
 yarn.lock
 .env
