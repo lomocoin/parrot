@@ -95,7 +95,7 @@ export class Server {
 
   run() {
     const server = http.createServer(this.app);
-    server.listen(this.config.port);
+    server.listen(this.config.port, '127.0.0.1');
     server.on('error', onError);
     server.on('listening', onListening);
 
