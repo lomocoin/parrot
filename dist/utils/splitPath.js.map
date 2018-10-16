@@ -1,0 +1,1 @@
+{"version":3,"file":"splitPath.js","sourceRoot":"","sources":["../../src/utils/splitPath.ts"],"names":[],"mappings":";;AAAA,MAAM,OAAO,GAAG,iBAAiB,CAAC;AAElC,kBAAe,CAAC,IAAY,EAAE,EAAE,CAAC,CAAC,IAAI,CAAC,KAAK,CAAC,OAAO,CAAC,IAAI,EAAE,CAAC;KACzD,GAAG,CAAC,SAAS,CAAC,EAAE,CAAC,SAAS,CAAC,KAAK,CAAC,GAAG,CAAC,CAAC,CAAC"}

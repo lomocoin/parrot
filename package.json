@@ -2,6 +2,7 @@
   "name": "parrot",
   "version": "1.0.0",
   "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
   "bin": {
     "parrot": "./bin/parrot.js"
   },
@@ -14,7 +15,8 @@
     "test": "jest --forceExit --coverage --verbose",
     "lint": "tslint -c tslint.json './src/**/*.ts'",
     "prebuild": "rimraf ./dist",
-    "build": "tsc"
+    "build": "tsc",
+    "prepublishOnly": "npm run build"
   },
   "jest": {
     "transform": {

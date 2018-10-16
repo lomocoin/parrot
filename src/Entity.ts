@@ -10,13 +10,13 @@ import {
   IDate,
 } from './decorators/PropertyTypes';
 import metaRepo from './storage/MetaRepo';
-import imageRepo from './storage/ImageRepo';
 import getRandomString from './utils/getRandomString';
 import getRandomNumber from './utils/getRandomNumber';
 import getRandomBoolean from './utils/getRandomBoolean';
 import getRandom from './utils/getRandom';
 import getRandomDate from './utils/getRandomDate';
 import applyMixins from './utils/applyMixins';
+import log from './utils/log';
 
 export interface MetaEntity {
   string: IString[];
@@ -27,13 +27,14 @@ export interface MetaEntity {
 
 export interface IEntityInstance { new(...args: any[]): any }
 
-export const Entity = (constructor: IEntityInstance): IEntityInstance => {
+export const Entity = (recordCount: number) => (constructor: IEntityInstance): IEntityInstance => {
   const EntityName = pluralize(constructor.toString().split(' ')[1].toLowerCase());
- class EntityInstance extends constructor implements BaseEntity {
+  class EntityInstance extends constructor implements BaseEntity {
     constructor(...args: any[]) {
       super(...args);
-      const [config, basePath] = args;
-      imageRepo.setImagePath(config.imagePath);
+      const [basePath] = args;
+      log.debug(args);
+      log.debug(basePath);
       metaRepo.getMeta(EntityName, 'string')!
         .forEach(({ name, option }: IString) => {
           (this as any)[name] = (args as any)[name] || getRandomString(option);
@@ -79,11 +80,12 @@ export const Entity = (constructor: IEntityInstance): IEntityInstance => {
 
     static sequence: number = 1;
     static EntityName: string = EntityName;
+    static recordCount: number = recordCount || 1;
 
     static nextVal() {
       return EntityInstance.sequence ++;
     }
-  
+
     id: number;
     createdAt: number;
   }

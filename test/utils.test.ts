@@ -1,13 +1,9 @@
 import moment from 'moment';
-import shell from 'shelljs';
-import fs from 'fs';
-import path from 'path';
 import getRandomString from '../src/utils/getRandomString';
 import getRandomNumber from '../src/utils/getRandomNumber';
 import getRandomBoolean from '../src/utils/getRandomBoolean';
 import getRandom from '../src/utils/getRandom';
 import getRandomDate from '../src/utils/getRandomDate';
-import getRandomImage from '../src/utils/getRandomImage';
 import applyMixins from '../src/utils/applyMixins';
 import splitPath from '../src/utils/splitPath';
 
@@ -83,18 +79,6 @@ describe('getRandomDate', () => {
   test('should get random date between startTime and now if endTime is null', () => {
     const m = getRandomDate('YYYY-MM-DD', '2018-05-01');
     expect(m.isBetween('1970-05-01', moment())).toBe(true);
-  });
-});
-
-describe('getRandomImage', () => {
-  test('should save a image to a given path', () => {
-    const imagePath = './test';
-    const fileName = getRandomImage({ width: 300, height: 300, imagePath });
-    const exist = fs.existsSync(path.resolve(imagePath, fileName));
-    expect(exist).toBe(true);
-  });
-  afterAll(() => {
-    shell.exec('rm -rf ./test/*.png');
   });
 });
 

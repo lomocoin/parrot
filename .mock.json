@@ -23,7 +23,8 @@
       "*": [
         "node_modules/*"
       ]
-    }
+    },
+    "typeRoots" : ["test/models"]
   },
   "include": [
     "test/models/**/*"
