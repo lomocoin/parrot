@@ -38,9 +38,9 @@ const getHandler = (db, splittedPath) => {
         throw new Errors_1.NotFoundError();
     }
     let resultSet = null;
-    const [property, id] = splittedPath[0];
+    const [id] = splittedPath[0];
     if (id) {
-        resultSet = repo.selectOne((r) => r.id === Number.parseInt(id, 10));
+        resultSet = repo.selectOne((r) => r ? r.id === Number.parseInt(id, 10) : false);
         return getRecord(resultSet, splittedPath.slice(1));
     }
     else {
@@ -64,7 +64,7 @@ const postHandler = (db, splittedPath, params) => {
         parentRepo = db.get(parentRepoName);
         const record = new repo.Entity(...params);
         repo.insert(record);
-        const parentRecord = parentRepo.selectOne((r) => r.id === Number.parseInt(id, 10));
+        const parentRecord = parentRepo.selectOne((r) => r ? r.id === Number.parseInt(id, 10) : false);
         parentRepo.update(parentRecord.id, Object.assign({}, parentRecord, {
             [repo.Entity.EntityName]: [...parentRecord[repo.Entity.entityName], record],
         }));
@@ -87,7 +87,7 @@ const putHandler = (db, splittedPath, params) => {
         repo = db.get(repoName);
         repo.update(Number.parseInt(recordId, 10), params);
         parentRepo = db.get(parentRepoName);
-        const parentRecord = parentRepo.selectOne((r) => r.id === Number.parseInt(parentRecordId, 10));
+        const parentRecord = parentRepo.selectOne((r) => r ? r.id === Number.parseInt(parentRecordId, 10) : false);
         parentRepo.update(Number.parseInt(parentRecordId, 10), {
             [repo.Entity.EntityName]: [...parentRecord[repo.Entity.EntityName].map((r) => (r.id === recordId ? Object.assign({}, params, r) : r))],
         });
@@ -110,7 +110,7 @@ const deleteHandler = (db, splittedPath) => {
         repo = db.get(repoName);
         repo.delete(Number.parseInt(recordId, 10));
         parentRepo = db.get(parentRepoName);
-        const parentRecord = parentRepo.selectOne((r) => r.id === Number.parseInt(parentRecordId, 10));
+        const parentRecord = parentRepo.selectOne((r) => r ? r.id === Number.parseInt(parentRecordId, 10) : false);
         parentRepo.update(Number.parseInt(parentRecordId, 10), {
             [repo.Entity.EntityName]: [...parentRecord[repo.Entity.EntityName].filter((r) => (r.id !== recordId))],
         });
@@ -124,7 +124,7 @@ exports.mockMiddleware = (config) => {
         path: path_1.resolve('.', name),
     }));
     const db = new DataBase_1.default(models, config);
-    return errorWrap_1.default((req, res, next) => __awaiter(this, void 0, void 0, function* () {
+    return errorWrap_1.default((req, res) => __awaiter(this, void 0, void 0, function* () {
         const splittedPath = splitPath_1.default(req.path);
         if (req.method === 'GET') {
             const result = yield getHandler(db, splittedPath);

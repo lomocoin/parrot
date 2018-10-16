@@ -28,7 +28,7 @@ class DataBase extends Map {
                 const source = repository.select();
                 source.forEach((record, index) => {
                     repository.update(record.id, {
-                        [propertyName]: this.get(inflected_1.pluralize(option.target.toLowerCase())).select((r, i) => i % source.length === index),
+                        [propertyName]: this.get(inflected_1.pluralize(option.target.toLowerCase())).select((_, i) => i % source.length === index),
                     });
                 });
             });
@@ -36,7 +36,7 @@ class DataBase extends Map {
             (MetaRepo_1.default.getMeta(name, 'ManyToOne') || []).map(({ name: propertyName, option }) => {
                 const repository = this.get(name);
                 const source = repository.select();
-                source.forEach((record, index) => {
+                source.forEach((record) => {
                     repository.update(record.id, {
                         [propertyName]: this.get(inflected_1.pluralize(option.target.toLowerCase())).selectOne((r) => r[option.targetProperty] === record.id)
                     });
@@ -48,7 +48,7 @@ class DataBase extends Map {
                 const source = repository.select();
                 source.forEach((record, index) => {
                     repository.update(record.id, {
-                        [propertyName]: this.get(inflected_1.pluralize(option.target.toLowerCase())).select((r, i) => i === index)
+                        [propertyName]: this.get(inflected_1.pluralize(option.target.toLowerCase())).select((_, i) => i === index)
                     });
                 });
             });
@@ -58,7 +58,7 @@ class DataBase extends Map {
                 const source = repository.select();
                 source.forEach((record, index) => {
                     repository.update(record.id, {
-                        [propertyName]: this.get(inflected_1.pluralize(option.target.toLowerCase())).select((r, i) => index % (i + 1) === 0)
+                        [propertyName]: this.get(inflected_1.pluralize(option.target.toLowerCase())).select((_, i) => index % (i + 1) === 0)
                     });
                 });
             });

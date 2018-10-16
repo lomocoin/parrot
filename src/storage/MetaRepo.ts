@@ -20,7 +20,7 @@ export class MetaRepo extends Map<string, MetaEntity> {
     if (!this.has(entityName)) {
       this.set(entityName, new MetaEntity());
     }
-    const repo = this.get(entityName)!.get(type)!.add(property);
+    this.get(entityName)!.get(type)!.add(property);
   };
   getMeta(entityName: string, type: PropertyType | RelationType): any[] | undefined {
     if (!this.has(entityName)) {
@@ -32,7 +32,7 @@ export class MetaRepo extends Map<string, MetaEntity> {
     if (!this.has(entityName)) {
       this.set(entityName, new MetaEntity())
     }
-    const repo = this.get(entityName)!.get(type)!.add(relation);
+    this.get(entityName)!.get(type)!.add(relation);
   }
 }
 

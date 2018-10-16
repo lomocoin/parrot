@@ -6,6 +6,6 @@ export default class Repository {
     insert(record: BaseEntity): void;
     update(id: number, record: any): void;
     delete(id: number): void;
-    select(filter?: (r: BaseEntity, i: number) => {} | undefined): Array<any | undefined>;
-    selectOne(find: (r: BaseEntity, i: number) => boolean): any | undefined;
+    select(filter?: (r: BaseEntity | undefined, i: number) => {} | undefined): Array<any | undefined>;
+    selectOne(find: (r: BaseEntity | undefined, i: number) => boolean): any | undefined;
 }

@@ -7,6 +7,6 @@ export default class BaseEntity {
     return BaseEntity.sequence ++;
   }
 
-  id: number;
-  createdAt: number;
+  id: number = -1;
+  createdAt: number = new Date().getTime();
 }

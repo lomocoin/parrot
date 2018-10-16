@@ -17,14 +17,14 @@ export default class Repository {
   delete(id: number): void {
     this.data.set(id, undefined);
   }
-  select(filter?: (r: BaseEntity, i: number) => {} | undefined): Array<any | undefined> {
+  select(filter?: (r: BaseEntity | undefined, i: number) => {} | undefined): Array<any | undefined> {
     const result = [...this.data.values()];
     if (!filter) {
       return result;
     }
     return result.filter(filter);
   }
-  selectOne(find: (r: BaseEntity, i: number) => boolean): any | undefined {
+  selectOne(find: (r: BaseEntity | undefined, i: number) => boolean): any | undefined {
     const result = [...this.data.values()];
     return result.find(find);
   }

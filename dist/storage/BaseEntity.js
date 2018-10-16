@@ -1,6 +1,10 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 class BaseEntity {
+    constructor() {
+        this.id = -1;
+        this.createdAt = new Date().getTime();
+    }
     static nextVal() {
         return BaseEntity.sequence++;
     }

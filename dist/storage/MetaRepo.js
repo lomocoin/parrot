@@ -9,7 +9,7 @@ class MetaRepo extends Map {
         if (!this.has(entityName)) {
             this.set(entityName, new MetaEntity_1.default());
         }
-        const repo = this.get(entityName).get(type).add(property);
+        this.get(entityName).get(type).add(property);
     }
     ;
     getMeta(entityName, type) {
@@ -23,7 +23,7 @@ class MetaRepo extends Map {
         if (!this.has(entityName)) {
             this.set(entityName, new MetaEntity_1.default());
         }
-        const repo = this.get(entityName).get(type).add(relation);
+        this.get(entityName).get(type).add(relation);
     }
 }
 exports.MetaRepo = MetaRepo;

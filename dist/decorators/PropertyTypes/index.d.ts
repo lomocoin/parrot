@@ -9,4 +9,4 @@ export interface IPropertyOption {
 }
 export declare type PropertyOption = IStringOption | IIntegerOption | IEnumOption | IBoolOption | IDateOption | IDecimalOption;
 export declare type PropertyType = 'string' | 'integer' | 'decimal' | 'enum' | 'bool' | 'date';
-export { IString, IInteger, IDecimal, IBool, IEnum, IDate, DateDisplayType };
+export { IString, IInteger, IDecimal, IBool, IEnum, IDate, DateDisplayType, };

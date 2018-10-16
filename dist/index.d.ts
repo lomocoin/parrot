@@ -1,8 +1,7 @@
-/// <reference types="express" />
 import { Express } from 'express';
-export { Entity } from './Entity';
+export { Entity, IEntityInstance } from './Entity';
 export { Column } from './decorators/Column';
-export { OneToMany, ManyToOne, OneToOne } from './decorators/Relation';
+export { ManyToOne, OneToMany, OneToOne, ManyToMany } from './decorators/Relation';
 export { mockMiddleware } from './middleware';
 export declare class Server {
     app: Express;

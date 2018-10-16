@@ -1,14 +1,14 @@
 import * as http from 'http';
 import fs from 'fs';
-import { resolve, join } from 'path';
+import { resolve } from 'path';
 import express, { Express, Request, Response, NextFunction } from 'express';
 import bodyParser from 'body-parser';
 import cookieParser from 'cookie-parser';
 import uuidV4 from 'uuid/v4';
 import { mockMiddleware } from './middleware';
-export { Entity } from './Entity';
+export { Entity, IEntityInstance } from './Entity';
 export { Column } from './decorators/Column';
-export { OneToMany, ManyToOne, OneToOne } from './decorators/Relation';
+export { ManyToOne, OneToMany, OneToOne, ManyToMany } from './decorators/Relation';
 export { mockMiddleware } from './middleware';
 import log from './utils/log';
 
@@ -81,7 +81,7 @@ export class Server {
     this.app.use(mockMiddleware(this.config));
 
     this.app.use(
-      (err: Error, req: Request, res: Response, next: NextFunction) => {
+      (err: Error, _: Request, res: Response) => {
         let status = 500;
         if (!Number.isNaN(Number.parseInt(err.message))) {
           status = Number.parseInt(err.message, 10);
@@ -96,19 +96,8 @@ export class Server {
   run() {
     const server = http.createServer(this.app);
     server.listen(this.config.port, '127.0.0.1');
-    server.on('error', onError);
-    server.on('listening', onListening);
 
-    function onListening() {
-      const addr = server.address();
-      const bind = typeof addr === 'string'
-        ? 'pipe ' + addr
-        : 'port ' + addr.port;
-
-      log.info('Listening on ' + bind);
-    }
-
-    function onError(error: any) {
+    const onError = (error: any) => {
       if (error.syscall !== 'listen') {
         throw error;
       }
@@ -131,5 +120,17 @@ export class Server {
           throw error;
       }
     }
+
+    const onListening = () => {
+      const addr = server.address();
+      const bind = typeof addr === 'string'
+        ? 'pipe ' + addr
+        : 'port ' + addr.port;
+
+      log.info('Listening on ' + bind);
+    }
+
+    server.on('error', onError);
+    server.on('listening', onListening);
   }
 }

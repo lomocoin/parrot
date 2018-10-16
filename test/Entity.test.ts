@@ -1,15 +1,13 @@
 import BaseEntity from '../src/storage/BaseEntity';
-import { Entity, IEntityInstance } from '../src/Entity';
-import Player from './model/Player';
-import Skill from './model/Skill';
-import Food from './model/Food';
+import { Entity, IEntityInstance } from '../src';
+import Player from './models/Player';
+// import Skill from './model/Skill';
+// import Food from './model/Food';
 
 describe("Entity", () => {
 
   const config = {
     port: 3000,
-    outDir: ['test/models/**/*'],
-    quite: false,
     auth:
     {
       username: 'custom-username',
@@ -31,11 +29,12 @@ describe("Entity", () => {
       strictNullChecks: true,
       paths: { '*': [Array] }
     },
-    include: ['test/models/**/*'],
+    include: ['test/models/**/*.pt'],
     exclude: ['src'], 
   }
 
-  test("Entity should be a instance of IEntityInstance", () => {
-    const player = new Player(config, );
-  })
+  test("Entity should be a instance of Entity", () => {
+    const player = new Player();
+    expect(player instanceof Entity).toBe(true)
+  });
 });

@@ -23,9 +23,10 @@ exports.Entity = Entity_1.Entity;
 var Column_1 = require("./decorators/Column");
 exports.Column = Column_1.Column;
 var Relation_1 = require("./decorators/Relation");
-exports.OneToMany = Relation_1.OneToMany;
 exports.ManyToOne = Relation_1.ManyToOne;
+exports.OneToMany = Relation_1.OneToMany;
 exports.OneToOne = Relation_1.OneToOne;
+exports.ManyToMany = Relation_1.ManyToMany;
 var middleware_2 = require("./middleware");
 exports.mockMiddleware = middleware_2.mockMiddleware;
 const log_1 = __importDefault(require("./utils/log"));
@@ -85,7 +86,7 @@ class Server {
             next();
         });
         this.app.use(middleware_1.mockMiddleware(this.config));
-        this.app.use((err, req, res, next) => {
+        this.app.use((err, _, res) => {
             let status = 500;
             if (!Number.isNaN(Number.parseInt(err.message))) {
                 status = Number.parseInt(err.message, 10);
@@ -97,16 +98,7 @@ class Server {
     run() {
         const server = http.createServer(this.app);
         server.listen(this.config.port, '127.0.0.1');
-        server.on('error', onError);
-        server.on('listening', onListening);
-        function onListening() {
-            const addr = server.address();
-            const bind = typeof addr === 'string'
-                ? 'pipe ' + addr
-                : 'port ' + addr.port;
-            log_1.default.info('Listening on ' + bind);
-        }
-        function onError(error) {
+        const onError = (error) => {
             if (error.syscall !== 'listen') {
                 throw error;
             }
@@ -126,7 +118,16 @@ class Server {
                 default:
                     throw error;
             }
-        }
+        };
+        const onListening = () => {
+            const addr = server.address();
+            const bind = typeof addr === 'string'
+                ? 'pipe ' + addr
+                : 'port ' + addr.port;
+            log_1.default.info('Listening on ' + bind);
+        };
+        server.on('error', onError);
+        server.on('listening', onListening);
     }
 }
 exports.Server = Server;
