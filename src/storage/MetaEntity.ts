@@ -4,6 +4,7 @@ import {
   IBool,
   IEnum,
   IDecimal,
+  IDate,
 } from '../decorators/PropertyTypes';
 import {
   IManyToOne,
@@ -17,6 +18,7 @@ export default class MetaEntity extends Map<string, Set<any>> {
     this.set('string', new Set<IString>())
     this.set('integer', new Set<IInteger>())
     this.set('decimal', new Set<IDecimal>())
+    this.set('date', new Set<IDate>())
     this.set('bool', new Set<IBool>())
     this.set('enum', new Set<IEnum>())
     this.set('OneToMany', new Set<IOneToMany>())

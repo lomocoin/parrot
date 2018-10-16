@@ -13,15 +13,12 @@ const getRandomBoolean_1 = __importDefault(require("./utils/getRandomBoolean"));
 const getRandom_1 = __importDefault(require("./utils/getRandom"));
 const getRandomDate_1 = __importDefault(require("./utils/getRandomDate"));
 const applyMixins_1 = __importDefault(require("./utils/applyMixins"));
-const log_1 = __importDefault(require("./utils/log"));
-exports.Entity = (recordCount) => (constructor) => {
+exports.Entity = (recordCount = 0) => (constructor) => {
     const EntityName = inflected_1.pluralize(constructor.toString().split(' ')[1].toLowerCase());
     class EntityInstance extends constructor {
         constructor(...args) {
             super(...args);
-            const [basePath] = args;
-            log_1.default.debug(args);
-            log_1.default.debug(basePath);
+            const [, basePath] = args;
             MetaRepo_1.default.getMeta(EntityName, 'string')
                 .forEach(({ name, option }) => {
                 this[name] = args[name] || getRandomString_1.default(option);
@@ -44,7 +41,7 @@ exports.Entity = (recordCount) => (constructor) => {
             });
             MetaRepo_1.default.getMeta(EntityName, 'enum')
                 .forEach(({ name, option }) => {
-                const enums = option.target instanceof Array ? option : require(path_1.resolve('.', path_1.dirname(basePath), option.target));
+                const enums = option.target instanceof Array ? option.target : require(path_1.resolve('.', path_1.dirname(basePath), option.target));
                 this[name] = args[name] || getRandom_1.default(enums);
             });
             MetaRepo_1.default.getMeta(EntityName, 'date')

@@ -29,6 +29,8 @@ exports.OneToOne = Relation_1.OneToOne;
 exports.ManyToMany = Relation_1.ManyToMany;
 var middleware_2 = require("./middleware");
 exports.mockMiddleware = middleware_2.mockMiddleware;
+const BaseEntity_1 = __importDefault(require("./storage/BaseEntity"));
+exports.BaseEntity = BaseEntity_1.default;
 const log_1 = __importDefault(require("./utils/log"));
 class Server {
     constructor(option) {
@@ -36,7 +38,7 @@ class Server {
         const config = {
             port: 7001,
             outDir: ['./.mockCache'],
-            quite: false
+            quite: option.quite,
         };
         if (fs_1.default.existsSync(path_1.resolve('.', option.config))) {
             Object.assign(config, JSON.parse(fs_1.default.readFileSync(path_1.resolve('.', option.config), 'utf-8')));

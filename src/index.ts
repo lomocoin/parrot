@@ -10,7 +10,10 @@ export { Entity, IEntityInstance } from './Entity';
 export { Column } from './decorators/Column';
 export { ManyToOne, OneToMany, OneToOne, ManyToMany } from './decorators/Relation';
 export { mockMiddleware } from './middleware';
+import BaseEntity from './storage/BaseEntity';
 import log from './utils/log';
+
+export { BaseEntity };
 
 export class Server {
   app: Express;
@@ -21,7 +24,7 @@ export class Server {
     const config: any = {
       port: 7001,
       outDir: ['./.mockCache'],
-      quite: false
+      quite: option.quite,
     };
     if (fs.existsSync(resolve('.', option.config))) {
       Object.assign(

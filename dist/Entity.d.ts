@@ -8,4 +8,4 @@ export interface MetaEntity {
 export interface IEntityInstance {
     new (...args: any[]): any;
 }
-export declare const Entity: (recordCount: number) => (constructor: IEntityInstance) => IEntityInstance;
+export declare const Entity: (recordCount?: number) => (constructor: IEntityInstance) => IEntityInstance;

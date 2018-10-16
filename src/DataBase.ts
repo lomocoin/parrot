@@ -13,7 +13,7 @@ export default class DataBase extends Map<string, Repository> {
   constructor(models: IModel[], config: any) {
     super();
     // create repositorys and first record
-    models.forEach(({ name, path }: { name: string, path: string }) => {
+    models.forEach(({ name, path }: { name: string, path: string}) => {
       const Entity = require(path).default;
       const repository = new Repository(Entity);
       range(Entity.recordCount).forEach(() => {

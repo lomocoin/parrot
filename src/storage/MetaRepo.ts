@@ -5,6 +5,7 @@ import {
   IBool,
   IEnum,
   PropertyType,
+  IDate,
 } from '../decorators/PropertyTypes/index';
 import {
   IManyToOne,
@@ -16,7 +17,7 @@ import {
 import MetaEntity from './MetaEntity';
 
 export class MetaRepo extends Map<string, MetaEntity> {
-  pushProperty(entityName: string, type: PropertyType, property: IString | IInteger | IDecimal | IBool | IEnum): void {
+  pushProperty(entityName: string, type: PropertyType, property: IString | IInteger | IDecimal | IBool | IEnum | IDate): void {
     if (!this.has(entityName)) {
       this.set(entityName, new MetaEntity());
     }

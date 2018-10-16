@@ -3,6 +3,8 @@ export { Entity, IEntityInstance } from './Entity';
 export { Column } from './decorators/Column';
 export { ManyToOne, OneToMany, OneToOne, ManyToMany } from './decorators/Relation';
 export { mockMiddleware } from './middleware';
+import BaseEntity from './storage/BaseEntity';
+export { BaseEntity };
 export declare class Server {
     app: Express;
     config: any;

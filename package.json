@@ -13,6 +13,7 @@
     "start": "ts-node bin/parrot | ./node_modules/.bin/bunyan",
     "dev": "ts-node",
     "test": "jest --forceExit --coverage --verbose",
+    "pretest": "yarn build",
     "lint": "tslint -c tslint.json './src/**/*.ts'",
     "prebuild": "rimraf ./dist",
     "build": "tsc",

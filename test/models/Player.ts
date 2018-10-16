@@ -1,7 +1,7 @@
 import { Entity, Column } from '../../dist/index';
 
 @Entity(5)
-class Bar {
+class Player {
   @Column({
     type: 'enum',
     target: './name',
@@ -40,4 +40,4 @@ class Bar {
   skillPoint: number;
 }
 
-export default Bar;
+export default Player;

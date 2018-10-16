@@ -6,6 +6,7 @@ class MetaEntity extends Map {
         this.set('string', new Set());
         this.set('integer', new Set());
         this.set('decimal', new Set());
+        this.set('date', new Set());
         this.set('bool', new Set());
         this.set('enum', new Set());
         this.set('OneToMany', new Set());

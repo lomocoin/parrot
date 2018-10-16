@@ -27,14 +27,12 @@ export interface MetaEntity {
 
 export interface IEntityInstance { new(...args: any[]): any }
 
-export const Entity = (recordCount: number) => (constructor: IEntityInstance): IEntityInstance => {
+export const Entity = (recordCount = 0) => (constructor: IEntityInstance): IEntityInstance => {
   const EntityName = pluralize(constructor.toString().split(' ')[1].toLowerCase());
   class EntityInstance extends constructor implements BaseEntity {
     constructor(...args: any[]) {
       super(...args);
-      const [basePath] = args;
-      log.debug(args);
-      log.debug(basePath);
+      const [, basePath] = args;
       metaRepo.getMeta(EntityName, 'string')!
         .forEach(({ name, option }: IString) => {
           (this as any)[name] = (args as any)[name] || getRandomString(option);
@@ -57,7 +55,7 @@ export const Entity = (recordCount: number) => (constructor: IEntityInstance): I
         });
       metaRepo.getMeta(EntityName, 'enum')!
         .forEach(({ name, option }: IEnum) => {
-          const enums = option.target instanceof Array ? option : require(resolve('.', dirname(basePath), (option.target as string)));
+          const enums = option.target instanceof Array ? option.target : require(resolve('.', dirname(basePath), (option.target as string)));
           (this as any)[name] = (args as any)[name] || getRandom(enums);
         });
       metaRepo.getMeta(EntityName, 'date')!
